@@ -947,6 +947,60 @@
       overflow: hidden;
     }
 
+    /* ── ABOUT PAGE HEADER with logo ── */
+.about-header {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding-bottom: 3rem;
+  margin-bottom: 3rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.about-header-logo {
+  flex-shrink: 0;
+  width: 96px;
+  height: 96px;
+  border-radius: 16px;
+  background: var(--accent);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.about-header-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 10px;
+}
+
+.about-header-logo-fallback {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-align: center;
+  line-height: 1.4;
+  padding: 0.5rem;
+}
+
+.about-header-eyebrow {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.about-header-eyebrow span {
+  color: var(--primary);
+  font-style: italic;
+}
+
     .vision-block::before {
       content: '♪';
       position: absolute;
