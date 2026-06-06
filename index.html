@@ -1217,6 +1217,9 @@
       .about-header { flex-direction: column; align-items: flex-start; gap: 1.25rem; }
       .founder-cards { grid-template-columns: 1fr 1fr; }
     }
+    @media (max-width: 480px) {
+  .founder-cards { grid-template-columns: 1fr; }
+}
   </style>
 </head>
 <body>
@@ -1562,20 +1565,40 @@
         <p>This website is the next step. We believe every school band in Singapore deserves access to what we built. So we're sharing it.</p>
       </div>
       <div class="founder-cards">
-        <div class="founder-card">
-          <div class="founder-avatar">Z</div>
-          <div class="founder-name">Zen Tay Tze Ern</div>
-          <div class="founder-role">Band EXCO · 25S41</div>
-          <p class="founder-desc">Co-designer and Student Conductor of VJCSB 2026. Believes that real leadership begins with choosing to act before being asked.</p>
-        </div>
-        <div class="founder-card">
-          <div class="founder-avatar">R</div>
-          <div class="founder-name">Wong Zhen Yu Rayne</div>
-          <div class="founder-role">Band EXCO · 25S63</div>
-          <p class="founder-desc">Co-designer and Vice-President of VJCSB 2026. Believes that the habits built in a CCA follow a person for life.</p>
-        </div>
-      </div>
+
+  <!-- ZEN'S CARD -->
+  <div class="founder-card">
+    <img
+      class="founder-photo"
+      src="REPLACE_WITH_ZEN_PHOTO_URL"
+      alt="Zen Tay Tze Ern"
+      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+    />
+    <div class="founder-photo-fallback" style="display:none;">Z</div>
+    <div class="founder-card-body">
+      <div class="founder-name">Zen Tay Tze Ern</div>
+      <div class="founder-role">Band EXCO · 25S41</div>
+      <p class="founder-desc">Co-designer and Student Conductor of VJCSB 2026. Believes that real leadership begins with choosing to act before being asked.</p>
     </div>
+  </div>
+
+  <!-- RAYNE'S CARD -->
+  <div class="founder-card">
+    <img
+      class="founder-photo"
+      src="REPLACE_WITH_RAYNE_PHOTO_URL"
+      alt="Wong Zhen Yu Rayne"
+      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+    />
+    <div class="founder-photo-fallback" style="display:none;">R</div>
+    <div class="founder-card-body">
+      <div class="founder-name">Wong Zhen Yu Rayne</div>
+      <div class="founder-role">Band EXCO · 25S63</div>
+      <p class="founder-desc">Co-designer and Vice-President of VJCSB 2026. Believes that the habits built in a CCA follow a person for life.</p>
+    </div>
+  </div>
+
+</div>
 
     <div class="vision-block">
       <h3>The Vision Ahead</h3>
