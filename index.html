@@ -126,36 +126,6 @@
       <!-- populated by JS -->
     </div>
 
-    <!-- Add video -->
-    <div class="add-video-section">
-      <h3>Add a Tutorial Video</h3>
-      <p>Paste a YouTube URL and fill in the details. It will appear in the grid above instantly.</p>
-      <div class="form-row">
-        <div class="form-group">
-          <label>YouTube URL</label>
-          <input type="text" id="learnUrl" placeholder="https://youtube.com/watch?v=..."/>
-        </div>
-        <div class="form-group">
-          <label>Video Title</label>
-          <input type="text" id="learnTitle" placeholder="e.g. Slow Practice Technique"/>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Category</label>
-          <select id="learnCat">
-            <option value="individual">Individual Practice</option>
-            <option value="music">Music Making</option>
-            <option value="ensemble">Ensemble Skills</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Short Description</label>
-          <input type="text" id="learnDesc" placeholder="What will viewers learn?"/>
-        </div>
-      </div>
-      <button class="btn-primary" onclick="addVideo('learn')">Add Video →</button>
-    </div>
   </div>
 </div>
 
@@ -175,37 +145,6 @@
     </div>
 
     <div class="video-grid" id="tipsGrid"></div>
-
-    <div class="add-video-section">
-      <h3>Add a Tip or Trick</h3>
-      <p>Short tips work best. Keep descriptions punchy — one sentence is enough.</p>
-      <div class="form-row">
-        <div class="form-group">
-          <label>YouTube URL</label>
-          <input type="text" id="tipsUrl" placeholder="https://youtube.com/watch?v=..."/>
-        </div>
-        <div class="form-group">
-          <label>Tip Title</label>
-          <input type="text" id="tipsTitle" placeholder="e.g. The Metronome Rule"/>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Category</label>
-          <select id="tipsCat">
-            <option value="rhythm">Rhythm</option>
-            <option value="dynamics">Dynamics</option>
-            <option value="tone">Tone</option>
-            <option value="mindset">Mindset</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Short Description</label>
-          <input type="text" id="tipsDesc" placeholder="One sentence about this tip"/>
-        </div>
-      </div>
-      <button class="btn-primary" onclick="addVideo('tips')">Add Tip →</button>
-    </div>
   </div>
 </div>
 
@@ -466,35 +405,32 @@
   }
 
   // ── VIDEO DATA ──
+  // Videos are no longer added through the site — they're curated by the
+  // owner directly in videos.json. This just loads and displays them.
   const videos = { learn: [], tips: [] };
 
-  function getYouTubeId(url) {
-    const match = url.match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/);
-    return match ? match[1] : null;
+  // Escapes HTML special characters so a stray "<" or "&" in a title/desc
+  // can never be interpreted as a real HTML tag when we insert it below.
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
   }
 
-  function addVideo(section) {
-    const url = document.getElementById(section + 'Url').value.trim();
-    const title = document.getElementById(section + 'Title').value.trim();
-    const cat = document.getElementById(section + 'Cat').value;
-    const desc = document.getElementById(section + 'Desc').value.trim();
-
-    if (!url || !title) { showToast('Please add a URL and title.'); return; }
-    const vid = getYouTubeId(url);
-    if (!vid) { showToast('Could not find a YouTube video ID. Check your URL.'); return; }
-
-    videos[section].push({ id: vid, title, cat, desc, url });
-
-    // Clear form
-    document.getElementById(section + 'Url').value = '';
-    document.getElementById(section + 'Title').value = '';
-    document.getElementById(section + 'Desc').value = '';
-
-    renderGrid(section);
-    showToast('Video added successfully!');
-
-    // Set featured if first learn video
-    if (section === 'learn' && videos.learn.length === 1) setFeatured(videos.learn[0]);
+  async function loadVideos() {
+    try {
+      const res = await fetch('videos.json');
+      if (!res.ok) throw new Error('videos.json not found');
+      const data = await res.json();
+      videos.learn = data.learn || [];
+      videos.tips = data.tips || [];
+    } catch (err) {
+      console.error('Could not load videos.json:', err);
+      showToast('Could not load videos. Check videos.json.');
+    }
+    renderGrid('learn');
+    renderGrid('tips');
+    if (videos.learn.length > 0) setFeatured(videos.learn[0]);
   }
 
   function renderGrid(section, filterCat = 'all') {
@@ -502,25 +438,31 @@
     const filtered = filterCat === 'all' ? videos[section] : videos[section].filter(v => v.cat === filterCat);
 
     if (filtered.length === 0) {
-      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--muted);font-size:0.9rem;">No videos yet — add one below.</div>`;
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--muted);font-size:0.9rem;">No videos yet.</div>`;
       return;
     }
 
-    grid.innerHTML = filtered.map(v => `
-      <div class="video-card" onclick="openModal('${v.id}','${v.title.replace(/'/g,"\\'")}','${(v.desc||'').replace(/'/g,"\\'")}')">
+    grid.innerHTML = filtered.map(v => {
+      const safeId = escapeHtml(v.id);
+      const safeTitle = escapeHtml(v.title);
+      const safeDesc = escapeHtml(v.desc || '');
+      const safeCat = escapeHtml(v.cat);
+      return `
+      <div class="video-card" onclick="openModal('${safeId}','${safeTitle.replace(/'/g,"\\'")}','${safeDesc.replace(/'/g,"\\'")}')">
         <div class="video-thumb">
           <div class="video-thumb-placeholder" style="background:linear-gradient(135deg,var(--primary),var(--primary-dark))">
             <div class="thumb-play">▶</div>
-            <span style="font-size:0.7rem;color:rgba(255,255,255,0.7)">${v.title.substring(0,28)}${v.title.length>28?'…':''}</span>
+            <span style="font-size:0.7rem;color:rgba(255,255,255,0.7)">${safeTitle.substring(0,28)}${safeTitle.length>28?'…':''}</span>
           </div>
         </div>
         <div class="video-card-body">
-          <div class="video-card-tags"><span class="tag">${v.cat}</span></div>
-          <div class="video-card-title">${v.title}</div>
-          <div class="video-card-desc">${v.desc || 'Click to watch'}</div>
+          <div class="video-card-tags"><span class="tag">${safeCat}</span></div>
+          <div class="video-card-title">${safeTitle}</div>
+          <div class="video-card-desc">${safeDesc || 'Click to watch'}</div>
         </div>
       </div>
-    `).join('');
+    `;
+    }).join('');
   }
 
   function setFeatured(v) {
@@ -561,9 +503,8 @@
     setTimeout(() => t.classList.remove('show'), 3000);
   }
 
-  // Init grids
-  renderGrid('learn');
-  renderGrid('tips');
+  // Init: fetch videos.json, then render both grids
+  loadVideos();
 </script>
 </body>
 </html>
