@@ -18,6 +18,7 @@
   <a class="nav-logo" href="#/home">Legato<span>Learn</span></a>
   <ul class="nav-links">
     <li><a href="#/home" class="active" id="nav-home">Home</a></li>
+    <li><a href="#/dashboard" id="nav-dashboard">Dashboard</a></li>
     <li><a href="#/learn" id="nav-learn">Learn</a></li>
     <li><a href="#/tips" id="nav-tips">Tips & Tricks</a></li>
     <li><a href="#/framework" id="nav-framework">The Framework</a></li>
@@ -54,6 +55,7 @@
 <!-- MOBILE MENU -->
 <div class="mobile-menu" id="mobileMenu">
   <a href="#/home" onclick="toggleMobileMenu()">Home</a>
+  <a href="#/dashboard" onclick="toggleMobileMenu()">Dashboard</a>
   <a href="#/learn" onclick="toggleMobileMenu()">Learn</a>
   <a href="#/tips" onclick="toggleMobileMenu()">Tips & Tricks</a>
   <a href="#/framework" onclick="toggleMobileMenu()">The Framework</a>
@@ -93,6 +95,24 @@
   </div>
 </div>
 
+<!-- ══════════════════ DASHBOARD PAGE ══════════════════ -->
+<div class="page" id="page-dashboard">
+  <div class="section">
+    <div class="section-label">Your Progress</div>
+    <h2 class="section-title">Dashboard</h2>
+    <p class="section-sub">A running record of what you've watched and what's next.</p>
+
+    <div id="dashboardContinue"></div>
+
+    <div class="form-row" style="margin-top:1.5rem;">
+      <div class="add-video-section" style="margin-top:0;">
+        <h3 style="font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--primary);margin-bottom:0.4rem;">Lessons completed</h3>
+        <p style="font-size:2rem;font-family:'Playfair Display',serif;font-weight:700;color:var(--text);margin:0;" id="dashboardCompletedCount">0</p>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════════════ LEARN PAGE ══════════════════ -->
 <div class="page" id="page-learn">
   <div class="section">
@@ -101,10 +121,10 @@
     <p class="section-sub">Tutorial videos organised by the three-level framework. Paste any YouTube link below to add your own.</p>
 
     <div class="filter-bar">
-      <button class="filter-chip active" onclick="filterVideos('all', this, 'learn')">All</button>
-      <button class="filter-chip" onclick="filterVideos('individual', this, 'learn')">Individual Practice</button>
-      <button class="filter-chip" onclick="filterVideos('music', this, 'learn')">Music Making</button>
-      <button class="filter-chip" onclick="filterVideos('ensemble', this, 'learn')">Ensemble Skills</button>
+      <button class="filter-chip active" data-cat="all" onclick="filterVideos('all', this, 'learn')">All</button>
+      <button class="filter-chip" data-cat="individual" onclick="filterVideos('individual', this, 'learn')">Individual Practice</button>
+      <button class="filter-chip" data-cat="music" onclick="filterVideos('music', this, 'learn')">Music Making</button>
+      <button class="filter-chip" data-cat="ensemble" onclick="filterVideos('ensemble', this, 'learn')">Ensemble Skills</button>
     </div>
 
     <!-- Featured -->
@@ -137,11 +157,11 @@
     <p class="section-sub">Short-form videos — 1 to 3 minutes each. Fast, actionable, and immediately applicable.</p>
 
     <div class="filter-bar">
-      <button class="filter-chip active" onclick="filterVideos('all', this, 'tips')">All</button>
-      <button class="filter-chip" onclick="filterVideos('rhythm', this, 'tips')">Rhythm</button>
-      <button class="filter-chip" onclick="filterVideos('dynamics', this, 'tips')">Dynamics</button>
-      <button class="filter-chip" onclick="filterVideos('tone', this, 'tips')">Tone</button>
-      <button class="filter-chip" onclick="filterVideos('mindset', this, 'tips')">Mindset</button>
+      <button class="filter-chip active" data-cat="all" onclick="filterVideos('all', this, 'tips')">All</button>
+      <button class="filter-chip" data-cat="rhythm" onclick="filterVideos('rhythm', this, 'tips')">Rhythm</button>
+      <button class="filter-chip" data-cat="dynamics" onclick="filterVideos('dynamics', this, 'tips')">Dynamics</button>
+      <button class="filter-chip" data-cat="tone" onclick="filterVideos('tone', this, 'tips')">Tone</button>
+      <button class="filter-chip" data-cat="mindset" onclick="filterVideos('mindset', this, 'tips')">Mindset</button>
     </div>
 
     <div class="video-grid" id="tipsGrid"></div>
@@ -362,6 +382,7 @@
     <div class="modal-body">
       <div class="modal-title" id="modalTitle"></div>
       <div class="modal-desc" id="modalDesc"></div>
+      <div id="modalCompleteAction"></div>
     </div>
   </div>
 </div>
@@ -369,9 +390,10 @@
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
+<script src="storage.js"></script>
 <script>
   // ── PAGE NAVIGATION (hash-based router) ──
-  const VALID_PAGES = ['home', 'learn', 'tips', 'framework', 'schools', 'about'];
+  const VALID_PAGES = ['home', 'dashboard', 'learn', 'tips', 'framework', 'schools', 'about'];
 
   // Sets the URL — this is what buttons call. Real <a href="#/..."> links
   // don't need this at all; the browser changes the hash on its own.
@@ -392,6 +414,8 @@
     const navLink = document.getElementById('nav-' + page);
     if (navLink) navLink.classList.add('active');
     window.scrollTo(0, 0);
+
+    if (page === 'dashboard') renderDashboard();
   }
 
   window.addEventListener('hashchange', renderPageFromHash);
@@ -448,6 +472,7 @@
     renderGrid('learn');
     renderGrid('tips');
     if (videos.learn.length > 0) setFeatured(videos.learn[0]);
+    renderDashboard();
   }
 
   function renderGrid(section, filterCat = 'all') {
@@ -464,6 +489,7 @@
       const safeTitle = escapeHtml(v.title);
       const safeDesc = escapeHtml(v.desc || '');
       const safeCat = escapeHtml(v.cat);
+      const done = isLessonComplete(v.id);
       return `
       <div class="video-card" onclick="openModal('${safeId}','${safeTitle.replace(/'/g,"\\'")}','${safeDesc.replace(/'/g,"\\'")}')">
         <div class="video-thumb">
@@ -471,6 +497,7 @@
             <div class="thumb-play">▶</div>
             <span style="font-size:0.7rem;color:rgba(255,255,255,0.7)">${safeTitle.substring(0,28)}${safeTitle.length>28?'…':''}</span>
           </div>
+          ${done ? `<div style="position:absolute;top:10px;right:10px;width:24px;height:24px;border-radius:50%;background:var(--surface);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">✓</div>` : ''}
         </div>
         <div class="video-card-body">
           <div class="video-card-tags"><span class="tag">${safeCat}</span></div>
@@ -493,6 +520,76 @@
     renderGrid(section, cat);
   }
 
+  // ── LESSON COMPLETION ──
+  // Stored as { videoId: true } so lookup is a simple key check.
+  function getCompletedMap() {
+    return storageGet('completed', {});
+  }
+
+  function isLessonComplete(id) {
+    return !!getCompletedMap()[id];
+  }
+
+  function toggleLessonComplete(id) {
+    const completed = getCompletedMap();
+    if (completed[id]) {
+      delete completed[id];
+    } else {
+      completed[id] = true;
+    }
+    storageSet('completed', completed);
+
+    renderModalCompleteAction(id);
+    renderGrid('learn', currentFilterFor('learn'));
+    renderGrid('tips', currentFilterFor('tips'));
+    if (document.getElementById('page-dashboard').classList.contains('active')) {
+      renderDashboard();
+    }
+  }
+
+  function currentFilterFor(section) {
+    const grid = document.getElementById(section + 'Grid');
+    const activeChip = grid.closest('.section').querySelector('.filter-chip.active');
+    return activeChip ? activeChip.getAttribute('data-cat') : 'all';
+  }
+
+  function renderModalCompleteAction(vidId) {
+    const el = document.getElementById('modalCompleteAction');
+    if (!vidId) { el.innerHTML = ''; return; }
+    const done = isLessonComplete(vidId);
+    el.innerHTML = `<button class="btn-ghost" style="margin-top:1rem;" onclick="toggleLessonComplete('${vidId}')">
+      ${done ? '✓ Completed — click to undo' : 'Mark as complete'}
+    </button>`;
+  }
+
+  // ── DASHBOARD ──
+  function renderDashboard() {
+    const completed = getCompletedMap();
+    const completedCount = Object.keys(completed).length;
+    document.getElementById('dashboardCompletedCount').textContent = completedCount;
+
+    const nextUp = videos.learn.find(v => !completed[v.id]);
+    const continueEl = document.getElementById('dashboardContinue');
+
+    if (!nextUp) {
+      continueEl.innerHTML = `<div class="featured-video-wrap"><div class="featured-video-meta"><span style="font-size:0.9rem;color:var(--muted);">${videos.learn.length === 0 ? 'No lessons available yet.' : 'You have completed every lesson in Learn.'}</span></div></div>`;
+      return;
+    }
+
+    const safeId = escapeHtml(nextUp.id);
+    const safeTitle = escapeHtml(nextUp.title);
+    const safeDesc = escapeHtml(nextUp.desc || '');
+
+    continueEl.innerHTML = `
+      <div class="featured-video-wrap" style="cursor:pointer;" onclick="openModal('${safeId}','${safeTitle.replace(/'/g,"\\'")}','${safeDesc.replace(/'/g,"\\'")}')">
+        <div class="featured-video-meta">
+          <span class="featured-tag">Continue learning</span>
+          <span style="font-size:0.9rem;color:var(--text);font-weight:500;">${safeTitle}</span>
+        </div>
+      </div>
+    `;
+  }
+
   // ── MODAL ──
   function openModal(vidId, title, desc) {
     document.getElementById('modalTitle').textContent = title;
@@ -500,6 +597,7 @@
     document.getElementById('modalVideo').innerHTML = vidId
       ? `<iframe src="https://www.youtube.com/embed/${vidId}?autoplay=1&rel=0" allowfullscreen allow="autoplay"></iframe>`
       : `<div style="display:flex;align-items:center;justify-content:center;height:100%;background:#111;color:#aaa;font-size:0.9rem;">${desc}</div>`;
+    renderModalCompleteAction(vidId);
     document.getElementById('modalOverlay').classList.add('open');
   }
 
