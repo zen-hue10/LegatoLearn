@@ -1,0 +1,68 @@
+/* ══════════════════════════════════════════════
+   VARIABLES.CSS
+   Theme tokens (CSS custom properties).
+   Every color/spacing "variable" the rest of the
+   site uses lives here. Change a theme by swapping
+   the values below, nothing else needs to change.
+   ══════════════════════════════════════════════ */
+
+:root {
+  --primary: #B5181B;
+  --primary-dark: #8a1013;
+  --primary-light: #e8c4c4;
+  --bg: #FAF8F5;
+  --surface: #ffffff;
+  --text: #1a1a1a;
+  --muted: #6b6b6b;
+  --border: #e8e0d8;
+  --accent: #f5ede6;
+}
+
+/* THEME SYSTEM */
+[data-theme="midnight"] {
+  --primary: #3B6FE8;
+  --primary-dark: #2755c4;
+  --primary-light: #c4d4f8;
+  --bg: #0d1117;
+  --surface: #161b22;
+  --text: #f0f6fc;
+  --muted: #8b949e;
+  --border: #30363d;
+  --accent: #1c2333;
+}
+
+[data-theme="forest"] {
+  --primary: #2D7D46;
+  --primary-dark: #1e5a32;
+  --primary-light: #c4e8cf;
+  --bg: #f4faf6;
+  --surface: #ffffff;
+  --text: #1a2e1e;
+  --muted: #5a7a62;
+  --border: #d0e8d8;
+  --accent: #e8f5ec;
+}
+
+[data-theme="mono"] {
+  --primary: #e0e0e0;
+  --primary-dark: #ffffff;
+  --primary-light: #444444;
+  --bg: #121212;
+  --surface: #1e1e1e;
+  --text: #f0f0f0;
+  --muted: #999999;
+  --border: #2e2e2e;
+  --accent: #252525;
+}
+
+[data-theme="warm"] {
+  --primary: #C4782A;
+  --primary-dark: #9a5d1f;
+  --primary-light: #f5dfc0;
+  --bg: #fdf8f2;
+  --surface: #ffffff;
+  --text: #2a1f0f;
+  --muted: #8a6a40;
+  --border: #e8ddd0;
+  --accent: #fef3e8;
+}
