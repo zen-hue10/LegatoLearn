@@ -1,8 +1,24 @@
 {
-    "learn": [
-      { "id": "dQw4w9WgXcQ", "title": "Slow Practice Technique", "cat": "individual", "desc": "..." }
-    ],
-    "tips": [
-      { "id": "...", "title": "The Metronome Rule", "cat": "rhythm", "desc": "..." }
-    ]
-  }
+  "learn": [
+    {
+      "id": "8buO8xiUoUlhU1jk",
+      "title": "Saxophone Prodigy",
+      "cat": "individual",
+      "desc": "Test video"
+    },
+    {
+      "id": "816CDU3Gl6xwU00C",
+      "title": "Understanding Phrasing",
+      "cat": "music",
+      "desc": "Test Video"
+    }
+  ],
+  "tips": [
+    {
+      "id": "ruqWcjIEwuTQjwk",
+      "title": "The Metronome Rule",
+      "cat": "rhythm",
+      "desc": "One rule that fixes 80% of rhythm problems in under a minute."
+    }
+  ]
+}
