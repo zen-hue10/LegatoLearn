@@ -15,14 +15,14 @@
 
 <!-- NAV -->
 <nav>
-  <a class="nav-logo" onclick="showPage('home')">Legato<span>Learn</span></a>
+  <a class="nav-logo" href="#/home">Legato<span>Learn</span></a>
   <ul class="nav-links">
-    <li><a onclick="showPage('home')" class="active" id="nav-home">Home</a></li>
-    <li><a onclick="showPage('learn')" id="nav-learn">Learn</a></li>
-    <li><a onclick="showPage('tips')" id="nav-tips">Tips & Tricks</a></li>
-    <li><a onclick="showPage('framework')" id="nav-framework">The Framework</a></li>
-    <li><a onclick="showPage('schools')" id="nav-schools">For Schools</a></li>
-    <li><a onclick="showPage('about')" id="nav-about">About</a></li>
+    <li><a href="#/home" class="active" id="nav-home">Home</a></li>
+    <li><a href="#/learn" id="nav-learn">Learn</a></li>
+    <li><a href="#/tips" id="nav-tips">Tips & Tricks</a></li>
+    <li><a href="#/framework" id="nav-framework">The Framework</a></li>
+    <li><a href="#/schools" id="nav-schools">For Schools</a></li>
+    <li><a href="#/about" id="nav-about">About</a></li>
   </ul>
   <div class="nav-right">
     <div class="theme-toggle">
@@ -53,12 +53,12 @@
 
 <!-- MOBILE MENU -->
 <div class="mobile-menu" id="mobileMenu">
-  <a onclick="showPage('home');toggleMobileMenu()">Home</a>
-  <a onclick="showPage('learn');toggleMobileMenu()">Learn</a>
-  <a onclick="showPage('tips');toggleMobileMenu()">Tips & Tricks</a>
-  <a onclick="showPage('framework');toggleMobileMenu()">The Framework</a>
-  <a onclick="showPage('schools');toggleMobileMenu()">For Schools</a>
-  <a onclick="showPage('about');toggleMobileMenu()">About</a>
+  <a href="#/home" onclick="toggleMobileMenu()">Home</a>
+  <a href="#/learn" onclick="toggleMobileMenu()">Learn</a>
+  <a href="#/tips" onclick="toggleMobileMenu()">Tips & Tricks</a>
+  <a href="#/framework" onclick="toggleMobileMenu()">The Framework</a>
+  <a href="#/schools" onclick="toggleMobileMenu()">For Schools</a>
+  <a href="#/about" onclick="toggleMobileMenu()">About</a>
 </div>
 
 <!-- ══════════════════ HOME PAGE ══════════════════ -->
@@ -69,8 +69,8 @@
       <h1 class="hero-title fade-up fade-up-2">Built by<br><em>students.</em><br>For students.</h1>
       <p class="hero-sub fade-up fade-up-3">A student-led resource hub for intentional musical growth. Learn smarter practice systems, transferable life skills, and the mindset to keep improving - in band and beyond.</p>
       <div class="hero-cta fade-up fade-up-4">
-        <button class="btn-primary" onclick="showPage('learn')">Start Learning →</button>
-        <button class="btn-ghost" onclick="showPage('framework')">Our Framework</button>
+        <button class="btn-primary" onclick="navigateTo('learn')">Start Learning →</button>
+        <button class="btn-ghost" onclick="navigateTo('framework')">Our Framework</button>
       </div>
     </div>
     <div class="hero-right">
@@ -370,14 +370,31 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  // ── PAGE NAVIGATION ──
-  function showPage(page) {
+  // ── PAGE NAVIGATION (hash-based router) ──
+  const VALID_PAGES = ['home', 'learn', 'tips', 'framework', 'schools', 'about'];
+
+  // Sets the URL — this is what buttons call. Real <a href="#/..."> links
+  // don't need this at all; the browser changes the hash on its own.
+  function navigateTo(page) {
+    location.hash = '#/' + page;
+  }
+
+  // Reads whatever the current URL hash is and shows the matching page.
+  // Runs on: initial page load, every hash change (including the browser's
+  // back/forward buttons, which change the hash automatically).
+  function renderPageFromHash() {
+    const requested = location.hash.replace(/^#\/?/, '');
+    const page = VALID_PAGES.includes(requested) ? requested : 'home';
+
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
     document.getElementById('page-' + page).classList.add('active');
-    document.getElementById('nav-' + page).classList.add('active');
+    const navLink = document.getElementById('nav-' + page);
+    if (navLink) navLink.classList.add('active');
     window.scrollTo(0, 0);
   }
+
+  window.addEventListener('hashchange', renderPageFromHash);
 
   // ── THEME ──
   function setTheme(theme) {
@@ -505,6 +522,9 @@
 
   // Init: fetch videos.json, then render both grids
   loadVideos();
+
+  // Show whichever page the URL points to (handles direct links + refresh)
+  renderPageFromHash();
 </script>
 </body>
 </html>
