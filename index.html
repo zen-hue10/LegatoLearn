@@ -102,12 +102,32 @@
     <h2 class="section-title">Dashboard</h2>
     <p class="section-sub">A running record of what you've watched and what's next.</p>
 
+    <div class="featured-video-wrap" style="margin-bottom:1.5rem;">
+      <div class="featured-video-meta" style="flex-direction:column;align-items:flex-start;gap:0.75rem;">
+        <span class="featured-tag">Practice timer</span>
+        <div style="display:flex;align-items:center;gap:1.25rem;width:100%;flex-wrap:wrap;">
+          <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--text);" id="timerElapsedDisplay">0:00</div>
+          <button class="btn-primary" id="timerToggleBtn" onclick="handleTimerToggle()">Start practice session</button>
+        </div>
+        <div style="width:100%;">
+          <div style="height:6px;border-radius:999px;background:var(--border);overflow:hidden;">
+            <div id="timerTodayProgressBar" style="height:100%;width:0%;background:var(--primary);border-radius:999px;transition:width 0.3s;"></div>
+          </div>
+          <div style="font-size:0.78rem;color:var(--muted);margin-top:0.4rem;" id="timerTodayProgress">0:00 / 3:00 to count today</div>
+        </div>
+      </div>
+    </div>
+
     <div id="dashboardContinue"></div>
 
     <div class="form-row" style="margin-top:1.5rem;">
       <div class="add-video-section" style="margin-top:0;">
         <h3 style="font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--primary);margin-bottom:0.4rem;">Lessons completed</h3>
         <p style="font-size:2rem;font-family:'Playfair Display',serif;font-weight:700;color:var(--text);margin:0;" id="dashboardCompletedCount">0</p>
+      </div>
+      <div class="add-video-section" style="margin-top:0;">
+        <h3 style="font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--primary);margin-bottom:0.4rem;">Current streak</h3>
+        <p style="font-size:2rem;font-family:'Playfair Display',serif;font-weight:700;color:var(--text);margin:0;" id="dashboardStreakCount">0 days</p>
       </div>
     </div>
   </div>
@@ -562,11 +582,122 @@
     </button>`;
   }
 
+  // ── PRACTICE TIMER & STREAK ──
+  const STREAK_THRESHOLD_SECONDS = 180; // 3 minutes
+
+  let timerRunning = false;
+  let timerElapsed = 0;
+  let timerInterval = null;
+
+  // Local calendar date (not UTC) as 'YYYY-MM-DD', optionally offset by days.
+  function dateKey(offsetDays = 0) {
+    const d = new Date();
+    d.setDate(d.getDate() + offsetDays);
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
+  function formatTime(totalSeconds) {
+    const m = Math.floor(totalSeconds / 60);
+    const s = totalSeconds % 60;
+    return `${m}:${String(s).padStart(2, '0')}`;
+  }
+
+  function getPracticeLog() {
+    return storageGet('practiceLog', {});
+  }
+
+  function getTodaySeconds() {
+    return getPracticeLog()[dateKey(0)] || 0;
+  }
+
+  function logPracticeSession(seconds) {
+    const log = getPracticeLog();
+    const key = dateKey(0);
+    log[key] = (log[key] || 0) + seconds;
+    storageSet('practiceLog', log);
+  }
+
+  // Streak = consecutive qualifying days ending today. If today hasn't hit
+  // the threshold *yet*, we check yesterday instead, so an in-progress day
+  // doesn't make an existing streak visually vanish before it's over.
+  function calculateStreak() {
+    const log = getPracticeLog();
+    const qualifies = (offset) => (log[dateKey(offset)] || 0) >= STREAK_THRESHOLD_SECONDS;
+
+    let offset = 0;
+    if (!qualifies(0)) {
+      if (!qualifies(-1)) return 0;
+      offset = -1;
+    }
+
+    let streak = 0;
+    while (qualifies(offset)) {
+      streak++;
+      offset--;
+    }
+    return streak;
+  }
+
+  function handleTimerToggle() {
+    timerRunning ? stopTimer() : startTimer();
+  }
+
+  function startTimer() {
+    if (timerRunning) return;
+    timerRunning = true;
+    timerInterval = setInterval(() => {
+      timerElapsed++;
+      updateTimerUI();
+    }, 1000);
+    updateTimerUI();
+  }
+
+  function stopTimer() {
+    if (!timerRunning) return;
+    clearInterval(timerInterval);
+    timerRunning = false;
+
+    if (timerElapsed > 0) {
+      logPracticeSession(timerElapsed);
+      showToast(`Logged ${formatTime(timerElapsed)} of practice`);
+    }
+    timerElapsed = 0;
+
+    updateTimerUI();
+    renderDashboard();
+  }
+
+  function updateTimerUI() {
+    const display = document.getElementById('timerElapsedDisplay');
+    const btn = document.getElementById('timerToggleBtn');
+    const progressBar = document.getElementById('timerTodayProgressBar');
+    const progressText = document.getElementById('timerTodayProgress');
+    if (!display || !btn || !progressBar || !progressText) return;
+
+    display.textContent = formatTime(timerElapsed);
+    btn.textContent = timerRunning ? 'Stop' : 'Start practice session';
+
+    const todaySoFar = getTodaySeconds() + timerElapsed;
+    const capped = Math.min(todaySoFar, STREAK_THRESHOLD_SECONDS);
+    progressBar.style.width = (capped / STREAK_THRESHOLD_SECONDS * 100) + '%';
+    progressText.textContent = todaySoFar >= STREAK_THRESHOLD_SECONDS
+      ? '✓ Today counts toward your streak'
+      : `${formatTime(todaySoFar)} / 3:00 to count today`;
+  }
+
   // ── DASHBOARD ──
   function renderDashboard() {
     const completed = getCompletedMap();
     const completedCount = Object.keys(completed).length;
     document.getElementById('dashboardCompletedCount').textContent = completedCount;
+
+    const streak = calculateStreak();
+    document.getElementById('dashboardStreakCount').textContent = `${streak} day${streak === 1 ? '' : 's'}`;
+
+    updateTimerUI();
 
     const nextUp = videos.learn.find(v => !completed[v.id]);
     const continueEl = document.getElementById('dashboardContinue');
