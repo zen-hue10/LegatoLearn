@@ -144,9 +144,20 @@
           <div style="height:6px;border-radius:999px;background:var(--border);overflow:hidden;">
             <div id="timerTodayProgressBar" style="height:100%;width:0%;background:var(--primary);border-radius:999px;transition:width 0.3s;"></div>
           </div>
-          <div style="font-size:0.78rem;color:var(--muted);margin-top:0.4rem;" id="timerTodayProgress">0:00 / 3:00 to count today</div>
+          <div style="font-size:0.78rem;color:var(--muted);margin-top:0.4rem;" id="timerTodayProgress">0:00 / 5:00 to count today</div>
         </div>
       </div>
+    </div>
+
+    <div class="add-video-section" style="margin-top:0;margin-bottom:1.5rem;">
+      <h3>Reflection Journal</h3>
+      <p>A quick note on how practice went today — what clicked, what didn't.</p>
+      <div class="form-group" style="margin-bottom:1rem;">
+        <textarea id="reflectionInput" placeholder="What did you work on? What felt hard? What will you try next time?"></textarea>
+      </div>
+      <button class="btn-primary" onclick="saveReflection()">Save reflection →</button>
+
+      <div id="reflectionHistory" style="margin-top:1.75rem;display:flex;flex-direction:column;gap:0.75rem;"></div>
     </div>
 
     <div id="dashboardContinue"></div>
@@ -614,7 +625,7 @@
   }
 
   // ── PRACTICE TIMER & STREAK ──
-  const STREAK_THRESHOLD_SECONDS = 180; // 3 minutes
+  const STREAK_THRESHOLD_SECONDS = 300; // 5 minutes
 
   let timerRunning = false;
   let timerElapsed = 0;
@@ -716,7 +727,7 @@
     progressBar.style.width = (capped / STREAK_THRESHOLD_SECONDS * 100) + '%';
     progressText.textContent = todaySoFar >= STREAK_THRESHOLD_SECONDS
       ? '✓ Today counts toward your streak'
-      : `${formatTime(todaySoFar)} / 3:00 to count today`;
+      : `${formatTime(todaySoFar)} / 5:00 to count today`;
   }
 
   // ── FRAMEWORK PROGRESS RINGS ──
@@ -749,6 +760,63 @@
     });
   }
 
+  // ── REFLECTION JOURNAL ──
+  function getReflections() {
+    return storageGet('reflections', []);
+  }
+
+  function saveReflection() {
+    const input = document.getElementById('reflectionInput');
+    const text = input.value.trim();
+    if (!text) { showToast('Write something before saving.'); return; }
+
+    const reflections = getReflections();
+    reflections.unshift({
+      id: 'r_' + Date.now(),
+      date: dateKey(0),
+      text: text
+    });
+    storageSet('reflections', reflections);
+
+    input.value = '';
+    showToast('Reflection saved.');
+    renderReflectionHistory();
+  }
+
+  function deleteReflection(id) {
+    const reflections = getReflections().filter(r => r.id !== id);
+    storageSet('reflections', reflections);
+    renderReflectionHistory();
+  }
+
+  function formatReflectionDate(dateStr) {
+    // dateStr is 'YYYY-MM-DD' in local time; parse manually to avoid the
+    // UTC-shift bug that new Date('YYYY-MM-DD') has in some browsers.
+    const [y, m, d] = dateStr.split('-').map(Number);
+    const date = new Date(y, m - 1, d);
+    return date.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+
+  function renderReflectionHistory() {
+    const container = document.getElementById('reflectionHistory');
+    const reflections = getReflections();
+
+    if (reflections.length === 0) {
+      container.innerHTML = `<p style="font-size:0.85rem;color:var(--muted);">No reflections yet — your saved entries will show up here.</p>`;
+      return;
+    }
+
+    container.innerHTML = reflections.map(r => `
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem 1.25rem;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.4rem;">
+          <span style="font-size:0.72rem;color:var(--primary);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">${escapeHtml(formatReflectionDate(r.date))}</span>
+          <button onclick="deleteReflection('${r.id}')" style="background:none;border:none;color:var(--muted);font-size:0.75rem;cursor:pointer;text-decoration:underline;">Delete</button>
+        </div>
+        <p style="font-size:0.88rem;color:var(--text);line-height:1.6;white-space:pre-wrap;">${escapeHtml(r.text)}</p>
+      </div>
+    `).join('');
+  }
+
   // ── DASHBOARD ──
   function renderDashboard() {
     const completed = getCompletedMap();
@@ -760,6 +828,7 @@
 
     updateTimerUI();
     renderFrameworkRings();
+    renderReflectionHistory();
 
     const nextUp = videos.learn.find(v => !completed[v.id]);
     const continueEl = document.getElementById('dashboardContinue');
