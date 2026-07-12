@@ -103,6 +103,37 @@
     <p class="section-sub">A running record of what you've watched and what's next.</p>
 
     <div class="featured-video-wrap" style="margin-bottom:1.5rem;">
+      <div class="featured-video-meta" style="align-items:flex-start;gap:2rem;flex-wrap:wrap;">
+        <svg viewBox="0 0 140 140" width="140" height="140" role="img" aria-labelledby="ringsTitle ringsDesc" style="flex-shrink:0;">
+          <title id="ringsTitle">Framework progress rings</title>
+          <desc id="ringsDesc">Lesson completion percentage for each of the three framework levels</desc>
+          <g transform="rotate(-90 70 70)">
+            <circle cx="70" cy="70" r="54" fill="none" stroke="var(--border)" stroke-width="10"/>
+            <circle id="ringIndividual" cx="70" cy="70" r="54" fill="none" stroke="#B5181B" stroke-width="10" stroke-linecap="round" stroke-dasharray="0 339.3"/>
+            <circle cx="70" cy="70" r="40" fill="none" stroke="var(--border)" stroke-width="10"/>
+            <circle id="ringMusic" cx="70" cy="70" r="40" fill="none" stroke="#C4782A" stroke-width="10" stroke-linecap="round" stroke-dasharray="0 251.3"/>
+            <circle cx="70" cy="70" r="26" fill="none" stroke="var(--border)" stroke-width="10"/>
+            <circle id="ringEnsemble" cx="70" cy="70" r="26" fill="none" stroke="#2D7D46" stroke-width="10" stroke-linecap="round" stroke-dasharray="0 163.4"/>
+          </g>
+        </svg>
+        <div style="display:flex;flex-direction:column;gap:10px;min-width:180px;flex:1;">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span style="display:flex;align-items:center;gap:8px;font-size:0.85rem;"><span style="width:9px;height:9px;border-radius:50%;background:#B5181B;display:inline-block;flex-shrink:0;"></span>Individual practice</span>
+            <span style="font-size:0.85rem;color:var(--muted);" id="ringIndividualLabel">0%</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span style="display:flex;align-items:center;gap:8px;font-size:0.85rem;"><span style="width:9px;height:9px;border-radius:50%;background:#C4782A;display:inline-block;flex-shrink:0;"></span>Music making</span>
+            <span style="font-size:0.85rem;color:var(--muted);" id="ringMusicLabel">0%</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span style="display:flex;align-items:center;gap:8px;font-size:0.85rem;"><span style="width:9px;height:9px;border-radius:50%;background:#2D7D46;display:inline-block;flex-shrink:0;"></span>Ensemble skills</span>
+            <span style="font-size:0.85rem;color:var(--muted);" id="ringEnsembleLabel">0%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="featured-video-wrap" style="margin-bottom:1.5rem;">
       <div class="featured-video-meta" style="flex-direction:column;align-items:flex-start;gap:0.75rem;">
         <span class="featured-tag">Practice timer</span>
         <div style="display:flex;align-items:center;gap:1.25rem;width:100%;flex-wrap:wrap;">
@@ -688,6 +719,36 @@
       : `${formatTime(todaySoFar)} / 3:00 to count today`;
   }
 
+  // ── FRAMEWORK PROGRESS RINGS ──
+  // Each ring reflects Learn-page lessons only (Tips use a different
+  // category set that doesn't map to the three framework levels).
+  const RING_CONFIG = {
+    individual: { r: 54, circleId: 'ringIndividual', labelId: 'ringIndividualLabel' },
+    music:      { r: 40, circleId: 'ringMusic',      labelId: 'ringMusicLabel' },
+    ensemble:   { r: 26, circleId: 'ringEnsemble',   labelId: 'ringEnsembleLabel' }
+  };
+
+  function renderFrameworkRings() {
+    const completed = getCompletedMap();
+
+    Object.entries(RING_CONFIG).forEach(([cat, cfg]) => {
+      const lessonsInCat = videos.learn.filter(v => v.cat === cat);
+      const total = lessonsInCat.length;
+      const done = lessonsInCat.filter(v => completed[v.id]).length;
+      const pct = total === 0 ? 0 : done / total;
+
+      const circumference = 2 * Math.PI * cfg.r;
+      const dash = circumference * pct;
+      const gap = circumference - dash;
+
+      const circle = document.getElementById(cfg.circleId);
+      if (circle) circle.setAttribute('stroke-dasharray', `${dash.toFixed(1)} ${gap.toFixed(1)}`);
+
+      const label = document.getElementById(cfg.labelId);
+      if (label) label.textContent = `${Math.round(pct * 100)}%`;
+    });
+  }
+
   // ── DASHBOARD ──
   function renderDashboard() {
     const completed = getCompletedMap();
@@ -698,6 +759,7 @@
     document.getElementById('dashboardStreakCount').textContent = `${streak} day${streak === 1 ? '' : 's'}`;
 
     updateTimerUI();
+    renderFrameworkRings();
 
     const nextUp = videos.learn.find(v => !completed[v.id]);
     const continueEl = document.getElementById('dashboardContinue');
