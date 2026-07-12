@@ -13,8 +13,6 @@
 </head>
 <body>
 
-<a href="#mainContent" class="sr-only" style="position:absolute;top:0;left:0;z-index:1000;">Skip to content</a>
-
 <!-- NAV -->
 <nav>
   <a class="nav-logo" href="#/home">Legato<span>Learn</span></a>
@@ -30,22 +28,22 @@
   <div class="nav-right">
     <div class="theme-toggle">
       <button class="theme-btn" onclick="toggleThemeMenu()">🎨 Theme</button>
-      <div class="theme-dropdown" id="themeDropdown" role="menu">
-        <button class="theme-option" role="menuitem" onclick="setTheme('victorian')">
+      <div class="theme-dropdown" id="themeDropdown">
+        <div class="theme-option" onclick="setTheme('victorian')">
           <span class="theme-swatch" style="background:#B5181B"></span> Victorian Red
-        </button>
-        <button class="theme-option" role="menuitem" onclick="setTheme('midnight')">
+        </div>
+        <div class="theme-option" onclick="setTheme('midnight')">
           <span class="theme-swatch" style="background:#3B6FE8"></span> Midnight Blue
-        </button>
-        <button class="theme-option" role="menuitem" onclick="setTheme('forest')">
+        </div>
+        <div class="theme-option" onclick="setTheme('forest')">
           <span class="theme-swatch" style="background:#2D7D46"></span> Forest Green
-        </button>
-        <button class="theme-option" role="menuitem" onclick="setTheme('warm')">
+        </div>
+        <div class="theme-option" onclick="setTheme('warm')">
           <span class="theme-swatch" style="background:#C4782A"></span> Warm Amber
-        </button>
-        <button class="theme-option" role="menuitem" onclick="setTheme('mono')">
-          <span class="theme-swatch" style="background:#121212"></span> Dark Mode
-        </button>
+        </div>
+        <div class="theme-option" onclick="setTheme('mono')">
+      <span class="theme-swatch" style="background:#121212"></span> Dark Mode
+      </div>
       </div>
     </div>
     <button class="hamburger" onclick="toggleMobileMenu()">
@@ -66,7 +64,6 @@
 </div>
 
 <!-- ══════════════════ HOME PAGE ══════════════════ -->
-<main id="mainContent">
 <div class="page active" id="page-home">
   <div class="hero">
     <div class="hero-left">
@@ -156,7 +153,6 @@
       <h3>Reflection Journal</h3>
       <p>A quick note on how practice went today — what clicked, what didn't.</p>
       <div class="form-group" style="margin-bottom:1rem;">
-        <label for="reflectionInput" class="sr-only">Reflection notes</label>
         <textarea id="reflectionInput" placeholder="What did you work on? What felt hard? What will you try next time?"></textarea>
       </div>
       <button class="btn-primary" onclick="saveReflection()">Save reflection →</button>
@@ -298,33 +294,33 @@
   
   <div class="form-row">
     <div class="form-group">
-      <label for="contactName">Your Name</label>
-      <input type="text" id="contactName" name="name" placeholder="Full name" required/>
+      <label>Your Name</label>
+      <input type="text" name="name" placeholder="Full name" required/>
     </div>
     <div class="form-group">
-      <label for="contactSchool">School</label>
-      <input type="text" id="contactSchool" name="school" placeholder="School name" required/>
+      <label>School</label>
+      <input type="text" name="school" placeholder="School name" required/>
     </div>
   </div>
   
   <div class="form-row">
     <div class="form-group">
-      <label for="contactRole">Role</label>
-      <select id="contactRole" name="role">
+      <label>Role</label>
+      <select name="role">
         <option>Band Director / Teacher-in-Charge</option>
         <option>Student Leader / EXCO</option>
         <option>Other</option>
       </select>
     </div>
     <div class="form-group">
-      <label for="contactEmail">Email</label>
-      <input type="email" id="contactEmail" name="email" placeholder="youremail@gmail.com" required/>
+      <label>Email</label>
+      <input type="email" name="email" placeholder="youremail@gmail.com" required/>
     </div>
   </div>
   
   <div class="form-group" style="margin-bottom:1rem">
-    <label for="contactMessage">Message</label>
-    <textarea id="contactMessage" name="message" placeholder="Tell us about your band and what you're hoping to achieve..."></textarea>
+    <label>Message</label>
+    <textarea name="message" placeholder="Tell us about your band and what you're hoping to achieve..."></textarea>
   </div>
   
   <button class="btn-primary" type="submit">Send Message →</button>
@@ -421,8 +417,6 @@
   </div>
 </div>
 
-</main>
-
 <!-- FOOTER -->
 <footer>
   <div style="display:flex;align-items:center;gap:1rem;">
@@ -444,8 +438,8 @@
 
 <!-- VIDEO MODAL -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
     <div class="modal-video" id="modalVideo"></div>
     <div class="modal-body">
       <div class="modal-title" id="modalTitle"></div>
@@ -456,7 +450,7 @@
 </div>
 
 <!-- TOAST -->
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="toast" id="toast"></div>
 
 <script src="storage.js"></script>
 <script>
@@ -477,16 +471,10 @@
     const page = VALID_PAGES.includes(requested) ? requested : 'home';
 
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-links a').forEach(a => {
-      a.classList.remove('active');
-      a.removeAttribute('aria-current');
-    });
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
     document.getElementById('page-' + page).classList.add('active');
     const navLink = document.getElementById('nav-' + page);
-    if (navLink) {
-      navLink.classList.add('active');
-      navLink.setAttribute('aria-current', 'page');
-    }
+    if (navLink) navLink.classList.add('active');
     window.scrollTo(0, 0);
 
     if (page === 'dashboard') renderDashboard();
@@ -564,16 +552,14 @@
       const safeDesc = escapeHtml(v.desc || '');
       const safeCat = escapeHtml(v.cat);
       const done = isLessonComplete(v.id);
-      const openCall = `openModal('${safeId}','${safeTitle.replace(/'/g,"\\'")}','${safeDesc.replace(/'/g,"\\'")}')`;
-      const ariaLabel = escapeHtml(`${v.title}${done ? ', completed' : ''}`);
       return `
-      <div class="video-card" tabindex="0" role="button" aria-label="${ariaLabel}" onclick="${openCall}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();${openCall}}">
+      <div class="video-card" onclick="openModal('${safeId}','${safeTitle.replace(/'/g,"\\'")}','${safeDesc.replace(/'/g,"\\'")}')">
         <div class="video-thumb">
           <div class="video-thumb-placeholder" style="background:linear-gradient(135deg,var(--primary),var(--primary-dark))">
             <div class="thumb-play">▶</div>
             <span style="font-size:0.7rem;color:rgba(255,255,255,0.7)">${safeTitle.substring(0,28)}${safeTitle.length>28?'…':''}</span>
           </div>
-          ${done ? `<div style="position:absolute;top:10px;right:10px;width:24px;height:24px;border-radius:50%;background:var(--surface);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;" aria-hidden="true">✓</div>` : ''}
+          ${done ? `<div style="position:absolute;top:10px;right:10px;width:24px;height:24px;border-radius:50%;background:var(--surface);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">✓</div>` : ''}
         </div>
         <div class="video-card-body">
           <div class="video-card-tags"><span class="tag">${safeCat}</span></div>
@@ -855,10 +841,9 @@
     const safeId = escapeHtml(nextUp.id);
     const safeTitle = escapeHtml(nextUp.title);
     const safeDesc = escapeHtml(nextUp.desc || '');
-    const openCall = `openModal('${safeId}','${safeTitle.replace(/'/g,"\\'")}','${safeDesc.replace(/'/g,"\\'")}')`;
 
     continueEl.innerHTML = `
-      <div class="featured-video-wrap" style="cursor:pointer;" tabindex="0" role="button" aria-label="Continue learning: ${escapeHtml(nextUp.title)}" onclick="${openCall}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();${openCall}}">
+      <div class="featured-video-wrap" style="cursor:pointer;" onclick="openModal('${safeId}','${safeTitle.replace(/'/g,"\\'")}','${safeDesc.replace(/'/g,"\\'")}')">
         <div class="featured-video-meta">
           <span class="featured-tag">Continue learning</span>
           <span style="font-size:0.9rem;color:var(--text);font-weight:500;">${safeTitle}</span>
@@ -868,10 +853,7 @@
   }
 
   // ── MODAL ──
-  let modalTriggerEl = null;
-
   function openModal(vidId, title, desc) {
-    modalTriggerEl = document.activeElement;
     document.getElementById('modalTitle').textContent = title;
     document.getElementById('modalDesc').textContent = desc;
     document.getElementById('modalVideo').innerHTML = vidId
@@ -879,27 +861,16 @@
       : `<div style="display:flex;align-items:center;justify-content:center;height:100%;background:#111;color:#aaa;font-size:0.9rem;">${desc}</div>`;
     renderModalCompleteAction(vidId);
     document.getElementById('modalOverlay').classList.add('open');
-    document.querySelector('.modal-close').focus();
   }
 
   function closeModal() {
     document.getElementById('modalOverlay').classList.remove('open');
     document.getElementById('modalVideo').innerHTML = '';
-    if (modalTriggerEl) {
-      modalTriggerEl.focus();
-      modalTriggerEl = null;
-    }
   }
 
   function closeModalOutside(e) {
     if (e.target === document.getElementById('modalOverlay')) closeModal();
   }
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && document.getElementById('modalOverlay').classList.contains('open')) {
-      closeModal();
-    }
-  });
 
   // ── TOAST ──
   function showToast(msg) {
