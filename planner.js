@@ -1,6 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════
-   PLANNER LOGIC
-   Integrated with LegatoLearn storage system
+   PLANNER LOGIC  —  synced with Dashboard reflections
    ═══════════════════════════════════════════════════════════════════ */
 
 const PLANNER_DATA = {
@@ -163,7 +162,7 @@ function plannerFinishSession() {
 function plannerShowReflection() {
   document.getElementById('planner-stat-duration').textContent = plannerDuration + ' min';
   document.getElementById('planner-stat-areas').textContent = plannerPlan.length;
-  document.getElementById('planner-stat-streak').textContent = plannerCalculateStreak();
+  document.getElementById('planner-stat-streak').textContent = calculateStreak();
 
   document.getElementById('planner-reflection-clicked').value = '';
   document.getElementById('planner-reflection-didnt').value = '';
@@ -177,28 +176,47 @@ function plannerSkipReflection() {
   plannerResetState();
 }
 
+/* ════════ KEY CHANGE: Save to SAME key as Dashboard ════════ */
 function plannerSaveReflection() {
-  const reflection = {
-    clicked: document.getElementById('planner-reflection-clicked').value,
-    didnt: document.getElementById('planner-reflection-didnt').value,
-    carry: document.getElementById('planner-reflection-carry').value,
-    date: new Date().toISOString()
-  };
+  const text = [
+    document.getElementById('planner-reflection-clicked').value,
+    document.getElementById('planner-reflection-didnt').value,
+    document.getElementById('planner-reflection-carry').value
+  ].filter(Boolean).join('\n\n');
 
-  const reflections = storageGet('plannerReflections', []);
-  reflections.push(reflection);
-  storageSet('plannerReflections', reflections);
+  const fullText = [
+    document.getElementById('planner-reflection-clicked').value,
+    document.getElementById('planner-reflection-didnt').value,
+    document.getElementById('planner-reflection-carry').value
+  ].map((t, i) => {
+    const labels = ['What clicked', 'What didn\'t', 'Carry forward'];
+    return t ? labels[i] + ': ' + t : '';
+  }).filter(Boolean).join('\n\n');
 
-  // Also log the practice time
+  if (!fullText.trim()) {
+    showToast('Reflection saved!');
+    plannerGoToStep('duration');
+    plannerResetState();
+    return;
+  }
+
+  // Save to SAME key as dashboard — instant sync
+  const reflections = storageGet('reflections', []);
+  reflections.unshift({
+    id: 'r_' + Date.now(),
+    date: dateKey(0),
+    text: fullText
+  });
+  storageSet('reflections', reflections);
+
+  // Log practice time for streak
   logPracticeSession(plannerDuration * 60);
 
-  showToast('Reflection saved!');
+  showToast('Reflection saved to Dashboard!');
   plannerGoToStep('duration');
   plannerResetState();
   plannerLoadHistory();
-  if (document.getElementById('page-dashboard').classList.contains('active')) {
-    renderDashboard();
-  }
+  updateNavBadge();
 }
 
 function plannerResetState() {
@@ -209,8 +227,7 @@ function plannerResetState() {
   document.getElementById('planner-session-next-btn').onclick = plannerNextItem;
 }
 
-/* ════════ History & Persistence ════════ */
-
+/* ════════ History ════════ */
 function plannerSaveSessionToHistory() {
   const session = {
     date: new Date().toISOString(),
@@ -218,7 +235,6 @@ function plannerSaveSessionToHistory() {
     plan: plannerPlan.map(p => ({ id: p.id, name: p.name, minutes: p.minutes })),
     focusAreas: plannerPlan.map(p => p.id)
   };
-
   const history = storageGet('plannerSessions', []);
   history.unshift(session);
   storageSet('plannerSessions', history);
@@ -227,12 +243,10 @@ function plannerSaveSessionToHistory() {
 function plannerLoadHistory() {
   const history = storageGet('plannerSessions', []);
   const container = document.getElementById('planner-history-list');
-
   if (history.length === 0) {
     container.innerHTML = '<p style="color:var(--muted);font-size:0.9rem;text-align:center;padding:2rem;">No sessions yet. Start your first practice above.</p>';
     return;
   }
-
   container.innerHTML = history.slice(0, 10).map(session => {
     const date = new Date(session.date);
     const dateStr = date.toLocaleDateString('en-SG', { month: 'short', day: 'numeric' });
@@ -245,29 +259,4 @@ function plannerLoadHistory() {
       </div>
     `;
   }).join('');
-}
-
-function plannerCalculateStreak() {
-  const sessions = storageGet('plannerSessions', []);
-  const dates = sessions
-    .map(s => s.date.split('T')[0])
-    .filter((d, i, arr) => arr.indexOf(d) === i)
-    .sort()
-    .reverse();
-
-  let streak = 0;
-  const today = new Date().toISOString().split('T')[0];
-  const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-
-  if (dates.length === 0) return 0;
-  if (dates[0] !== today && dates[0] !== yesterday) return 0;
-
-  for (let i = 0; i < dates.length; i++) {
-    const expected = new Date();
-    expected.setDate(expected.getDate() - i);
-    const expectedStr = expected.toISOString().split('T')[0];
-    if (dates[i] === expectedStr) streak++;
-    else break;
-  }
-  return streak;
 }
