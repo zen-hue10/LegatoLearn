@@ -717,24 +717,18 @@
   }
 
   // ════════ MORE DROPDOWN ════════
-  function toggleMoreDropdown(e) {
-    e.stopPropagation();
-    const dropdown = document.getElementById('navMoreDropdown');
-    const btn = document.getElementById('navMoreBtn');
-    dropdown.classList.toggle('open');
-    btn.classList.toggle('open');
-  }
+  function toggleLearnDropdown(e){
+  e.stopPropagation();
+  document.getElementById('navLearnDropdown').classList.toggle('show');
+}
+function closeLearnDropdown(){
+  document.getElementById('navLearnDropdown').classList.remove('show');
+}
 
-  function closeMoreDropdown() {
-    const dropdown = document.getElementById('navMoreDropdown');
-    const btn = document.getElementById('navMoreBtn');
-    if (dropdown) dropdown.classList.remove('open');
-    if (btn) btn.classList.remove('open');
-  }
 
   document.addEventListener('click', (e) => {
     if (!e.target.closest('.nav-more-wrap')) {
-      closeMoreDropdown();
+      closeLearnDropdown();
     }
   });
 
