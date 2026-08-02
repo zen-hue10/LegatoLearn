@@ -88,20 +88,19 @@
   <a class="nav-logo" href="#/home">Legato<span>Learn</span></a>
   <ul class="nav-links">
     <li><a href="#/home" class="active" id="nav-home">Home</a></li>
-    <li><a href="#/learn" id="nav-learn">Learn</a></li>
-    <li><a href="#/planner" id="nav-planner">Planner</a></li>
-    <li><a href="#/framework" id="nav-framework">Framework</a></li>
-    <li><a href="#/about" id="nav-about">About</a></li>
-    <li class="nav-more-wrap">
-      <button class="nav-more-btn" id="navMoreBtn" onclick="toggleMoreDropdown(event)">More</button>
-      <div class="nav-more-dropdown" id="navMoreDropdown">
-        <a href="#" onclick="navigateTo('tips');closeMoreDropdown();return false;">Tips & Tricks</a>
-        <a href="#" onclick="navigateTo('schools');closeMoreDropdown();return false;">For Schools</a>
+    <li class="nav-dropdown-wrap">
+      <button class="nav-dropdown-btn" id="navLearnBtn" onclick="toggleLearnDropdown(event)">Learn ▾</button>
+      <div class="nav-dropdown-menu" id="navLearnDropdown">
+        <a href="#" onclick="navigateTo('learn');closeLearnDropdown();return false;">Lessons</a>
+        <a href="#" onclick="navigateTo('tips');closeLearnDropdown();return false;">Tips & Tricks</a>
       </div>
     </li>
+    <li><a href="#/planner" id="nav-planner">Planner</a></li>
+    <li><a href="#/framework" id="nav-framework">Framework</a></li>
+    <li><a href="#/schools" id="nav-schools">For Schools</a></li>
+    <li><a href="#/about" id="nav-about">About</a></li>
   </ul>
   <div class="nav-right">
-    <!-- Dashboard sidebar trigger -->
     <button class="nav-icon-btn" id="navDashBtn" onclick="toggleSidebar()" title="Dashboard">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
         <rect x="3" y="3" width="7" height="7"/>
@@ -111,7 +110,6 @@
       </svg>
       <span class="nav-badge" id="navDashBadge">0</span>
     </button>
-
     <div class="theme-toggle">
       <button class="theme-btn" onclick="toggleThemeMenu()">🎨 Theme</button>
       <div class="theme-dropdown" id="themeDropdown">
@@ -137,6 +135,7 @@
     </button>
   </div>
 </nav>
+
 
 <!-- ═══════════════════════════════════════════════════════════════════ DASHBOARD SIDEBAR ═══════════════════════════════════════════════════════════════════ -->
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
