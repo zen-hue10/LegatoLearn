@@ -739,10 +739,22 @@
   });
 
   // ════════ SIDEBAR DASHBOARD ════════
-  function toggleSidebar() {
-    const panel = document.getElementById('sidebarPanel');
-    if (panel.classList.contains('open')) closeSidebar(); else openSidebar();
+  function toggleSidebar(){
+  const panel = document.getElementById('sidebarPanel');
+  const overlay = document.getElementById('sidebarOverlay');
+  const isOpen = panel.classList.contains('open');
+  if(isOpen){
+    panel.classList.remove('open');
+    overlay.classList.remove('active');
+    document.body.classList.remove('dashboard-open');
+  } else {
+    renderSidebar();
+    panel.classList.add('open');
+    overlay.classList.add('active');
+    document.body.classList.add('dashboard-open');
   }
+}
+
 
   function openSidebar() {
     document.getElementById('sidebarOverlay').classList.add('open');
