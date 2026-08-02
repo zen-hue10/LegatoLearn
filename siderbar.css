@@ -1,0 +1,321 @@
+/* ═══════════════════════════════════════════════════════════════════
+   SIDEBAR DASHBOARD + MORE DROPDOWN + NAV ICON
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── Dashboard Sidebar ─── */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease, visibility 0.35s;
+}
+.sidebar-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.sidebar-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 420px;
+  max-width: 90vw;
+  height: 100vh;
+  background: var(--bg);
+  border-left: 1px solid var(--border);
+  z-index: 201;
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.sidebar-panel.open {
+  transform: translateX(0);
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.sidebar-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+}
+.sidebar-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.sidebar-close:hover {
+  background: var(--border);
+}
+
+.sidebar-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Sidebar content blocks */
+.sidebar-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.25rem;
+}
+.sidebar-block h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  color: var(--text);
+}
+
+/* Timer in sidebar */
+.sidebar-timer-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.sidebar-timer-display {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text);
+  min-width: 80px;
+}
+
+/* Stats row */
+.sidebar-stats-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+.sidebar-stat {
+  text-align: center;
+  padding: 0.75rem;
+  background: var(--bg);
+  border-radius: 12px;
+}
+.sidebar-stat-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1;
+}
+.sidebar-stat-label {
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-top: 0.3rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Reflection list in sidebar */
+.sidebar-reflection-item {
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+}
+.sidebar-reflection-item:last-child {
+  margin-bottom: 0;
+}
+.sidebar-reflection-date {
+  font-size: 0.7rem;
+  color: var(--primary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+.sidebar-reflection-text {
+  font-size: 0.82rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+/* Continue learning card */
+.sidebar-continue {
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.sidebar-continue:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+.sidebar-continue-tag {
+  display: inline-block;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 0.4rem;
+}
+.sidebar-continue-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+/* ─── Nav Icon Buttons ─── */
+.nav-icon-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  color: var(--muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.nav-icon-btn:hover,
+.nav-icon-btn.active {
+  background: var(--surface);
+  color: var(--primary);
+}
+.nav-icon-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Badge on dashboard icon */
+.nav-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--primary);
+  color: white;
+  font-size: 0.6rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+.nav-badge.show {
+  opacity: 1;
+}
+
+/* ─── More Dropdown ─── */
+.nav-more-wrap {
+  position: relative;
+}
+.nav-more-btn {
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: color 0.2s;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+}
+.nav-more-btn:hover,
+.nav-more-btn.active {
+  color: var(--primary);
+}
+.nav-more-btn::after {
+  content: '▾';
+  font-size: 0.7rem;
+  transition: transform 0.2s;
+}
+.nav-more-btn.open::after {
+  transform: rotate(180deg);
+}
+
+.nav-more-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.5rem;
+  min-width: 160px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition: all 0.2s ease;
+  z-index: 150;
+}
+.nav-more-dropdown.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.nav-more-dropdown a {
+  display: block;
+  padding: 0.6rem 0.9rem;
+  border-radius: 8px;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: background 0.15s;
+}
+.nav-more-dropdown a:hover {
+  background: var(--surface);
+  color: var(--primary);
+}
+
+/* Update nav-right gap */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Hide sidebar on very small screens if needed */
+@media (max-width: 480px) {
+  .sidebar-panel {
+    width: 100vw;
+    max-width: 100vw;
+  }
+}
