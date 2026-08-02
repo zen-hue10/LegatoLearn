@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="components.css">
   <link rel="stylesheet" href="animations.css">
   <link rel="stylesheet" href="pages.css">
+  <link rel="stylesheet" href="planner_styles.css">
 </head>
 <body>
 
@@ -20,6 +21,7 @@
     <li><a href="#/home" class="active" id="nav-home">Home</a></li>
     <li><a href="#/dashboard" id="nav-dashboard">Dashboard</a></li>
     <li><a href="#/learn" id="nav-learn">Learn</a></li>
+    <li><a href="#/planner" id="nav-planner">Planner</a></li>
     <li><a href="#/tips" id="nav-tips">Tips & Tricks</a></li>
     <li><a href="#/framework" id="nav-framework">The Framework</a></li>
     <li><a href="#/schools" id="nav-schools">For Schools</a></li>
@@ -57,6 +59,7 @@
   <a href="#/home" onclick="toggleMobileMenu()">Home</a>
   <a href="#/dashboard" onclick="toggleMobileMenu()">Dashboard</a>
   <a href="#/learn" onclick="toggleMobileMenu()">Learn</a>
+  <a href="#/planner" onclick="toggleMobileMenu()">Planner</a>
   <a href="#/tips" onclick="toggleMobileMenu()">Tips & Tricks</a>
   <a href="#/framework" onclick="toggleMobileMenu()">The Framework</a>
   <a href="#/schools" onclick="toggleMobileMenu()">For Schools</a>
@@ -227,6 +230,214 @@
     </div>
 
     <div class="video-grid" id="tipsGrid"></div>
+  </div>
+</div>
+<!-- ═══════════════════════════════════════════════════════════════════ PLANNER PAGE ═══════════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-planner">
+  <div class="section">
+    <div class="section-label">Build a Session</div>
+    <h2 class="section-title">Practice Planner</h2>
+    <p class="section-sub">Choose what you want to work on — we'll build a structured, timed session for you.</p>
+
+    <!-- Step 1: Duration -->
+    <div id="planner-step-duration" class="planner-step active">
+      <div class="planner-step-head">
+        <span class="planner-step-num">01</span>
+        <h3 class="planner-step-title">How much time do you have?</h3>
+      </div>
+      <div class="planner-duration-grid">
+        <button class="planner-duration-btn" data-min="15" onclick="plannerSelectDuration(15,this)">15 min</button>
+        <button class="planner-duration-btn" data-min="30" onclick="plannerSelectDuration(30,this)">30 min</button>
+        <button class="planner-duration-btn selected" data-min="45" onclick="plannerSelectDuration(45,this)">45 min</button>
+        <button class="planner-duration-btn" data-min="60" onclick="plannerSelectDuration(60,this)">60 min</button>
+        <button class="planner-duration-btn" data-min="90" onclick="plannerSelectDuration(90,this)">90 min</button>
+      </div>
+      <div class="planner-actions">
+        <button class="btn-primary" onclick="plannerGoToStep('focus')">Next →</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Focus Areas -->
+    <div id="planner-step-focus" class="planner-step">
+      <div class="planner-step-head">
+        <span class="planner-step-num">02</span>
+        <h3 class="planner-step-title">What do you want to work on today?</h3>
+        <p class="planner-step-sub">Select one or more. We'll weight your time accordingly.</p>
+      </div>
+
+      <div class="planner-category">
+        <h4 class="planner-category-title"><span class="planner-cat-dot" style="background:#B5181B"></span>Individual Practice</h4>
+        <div class="planner-options-grid">
+          <div class="planner-option-card selected" data-id="warmup" data-weight="0.15" onclick="plannerToggleOption(this)">
+            <div class="planner-option-icon">🔥</div>
+            <div class="planner-option-content">
+              <div class="planner-option-name">Warm-up & Fundamentals</div>
+              <div class="planner-option-desc">Long tones, scales, articulation exercises</div>
+            </div>
+            <div class="planner-option-check">✓</div>
+          </div>
+          <div class="planner-option-card selected" data-id="technique" data-weight="0.25" onclick="plannerToggleOption(this)">
+            <div class="planner-option-icon">🎯</div>
+            <div class="planner-option-content">
+              <div class="planner-option-name">Technical Passages</div>
+              <div class="planner-option-desc">Slow practice, metronome work, difficult sections</div>
+            </div>
+            <div class="planner-option-check">✓</div>
+          </div>
+          <div class="planner-option-card" data-id="recording" data-weight="0.15" onclick="plannerToggleOption(this)">
+            <div class="planner-option-icon">🎙️</div>
+            <div class="planner-option-content">
+              <div class="planner-option-name">Record & Reflect</div>
+              <div class="planner-option-desc">Self-assessment, honest feedback, goal tracking</div>
+            </div>
+            <div class="planner-option-check">✓</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="planner-category">
+        <h4 class="planner-category-title"><span class="planner-cat-dot" style="background:#C4782A"></span>Music Making</h4>
+        <div class="planner-options-grid">
+          <div class="planner-option-card selected" data-id="expression" data-weight="0.20" onclick="plannerToggleOption(this)">
+            <div class="planner-option-icon">🎭</div>
+            <div class="planner-option-content">
+              <div class="planner-option-name">Expression & Phrasing</div>
+              <div class="planner-option-desc">Dynamics, musical storytelling, interpretation</div>
+            </div>
+            <div class="planner-option-check">✓</div>
+          </div>
+          <div class="planner-option-card" data-id="repertoire" data-weight="0.25" onclick="plannerToggleOption(this)">
+            <div class="planner-option-icon">🎼</div>
+            <div class="planner-option-content">
+              <div class="planner-option-name">Repertoire Run-through</div>
+              <div class="planner-option-desc">Full pieces, continuity, stamina building</div>
+            </div>
+            <div class="planner-option-check">✓</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="planner-category">
+        <h4 class="planner-category-title"><span class="planner-cat-dot" style="background:#2D7D46"></span>Ensemble Skills</h4>
+        <div class="planner-options-grid">
+          <div class="planner-option-card" data-id="listening" data-weight="0.20" onclick="plannerToggleOption(this)">
+            <div class="planner-option-icon">👂</div>
+            <div class="planner-option-content">
+              <div class="planner-option-name">Listening & Blending</div>
+              <div class="planner-option-desc">Section balance, tuning, ensemble awareness</div>
+            </div>
+            <div class="planner-option-check">✓</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="planner-actions">
+        <button class="btn-ghost" onclick="plannerGoToStep('duration')">← Back</button>
+        <button class="btn-primary" onclick="plannerGeneratePlan()">Generate Plan ✨</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Generated Plan -->
+    <div id="planner-step-plan" class="planner-step">
+      <div class="planner-step-head">
+        <span class="planner-step-num">03</span>
+        <h3 class="planner-step-title">Your Practice Plan</h3>
+        <p class="planner-step-sub" id="planner-summary">45 minutes · 3 focus areas</p>
+      </div>
+
+      <div class="planner-progress-wrap">
+        <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--muted);margin-bottom:0.5rem;">
+          <span>Session Progress</span><span id="planner-progress-pct">0%</span>
+        </div>
+        <div class="planner-progress-bar"><div class="planner-progress-fill" id="planner-progress-fill"></div></div>
+      </div>
+
+      <div id="planner-plan-items" class="planner-plan-items"></div>
+
+      <div class="planner-pro-tip" id="planner-pro-tip">
+        <div class="planner-pro-tip-title">💡 Pro Tip</div>
+        <p id="planner-pro-tip-text">Set a timer for each section. When it rings, move on — discipline prevents over-practicing one thing.</p>
+      </div>
+
+      <div class="planner-actions">
+        <button class="btn-ghost" onclick="plannerGoToStep('focus')">← Adjust</button>
+        <button class="btn-primary" onclick="plannerStartSession()">Start Practice Session ▶</button>
+      </div>
+    </div>
+
+    <!-- Step 4: Active Session -->
+    <div id="planner-step-session" class="planner-step">
+      <div style="text-align:center;margin-bottom:2.5rem;">
+        <div id="planner-session-timer" style="font-family:'Playfair Display',serif;font-size:3rem;font-weight:700;color:var(--text);letter-spacing:-2px;line-height:1;margin-bottom:0.5rem;">00:00</div>
+        <div id="planner-session-current" style="font-size:1rem;font-weight:500;color:var(--muted);">Warm-up & Fundamentals</div>
+      </div>
+
+      <div class="planner-progress-wrap">
+        <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--muted);margin-bottom:0.5rem;">
+          <span>Overall Progress</span><span id="planner-session-pct">0%</span>
+        </div>
+        <div class="planner-progress-bar"><div class="planner-progress-fill" id="planner-session-progress"></div></div>
+      </div>
+
+      <div id="planner-session-items" class="planner-session-items"></div>
+
+      <div class="planner-actions" style="justify-content:center;">
+        <button class="btn-ghost" onclick="plannerEndSession()">End Session</button>
+        <button class="btn-primary" id="planner-session-next-btn" onclick="plannerNextItem()">Next →</button>
+      </div>
+    </div>
+
+    <!-- Step 5: Reflection -->
+    <div id="planner-step-reflection" class="planner-step">
+      <div class="planner-step-head">
+        <span class="planner-step-num" style="background:var(--primary);color:white;">✓</span>
+        <h3 class="planner-step-title">Session Complete</h3>
+        <p class="planner-step-sub">Great work. A quick reflection makes the next session better.</p>
+      </div>
+
+      <div class="planner-reflection-stats">
+        <div class="planner-stat-card">
+          <div class="planner-stat-value" id="planner-stat-duration">45 min</div>
+          <div class="planner-stat-label">Duration</div>
+        </div>
+        <div class="planner-stat-card">
+          <div class="planner-stat-value" id="planner-stat-areas">3</div>
+          <div class="planner-stat-label">Focus Areas</div>
+        </div>
+        <div class="planner-stat-card">
+          <div class="planner-stat-value" id="planner-stat-streak">1</div>
+          <div class="planner-stat-label">Day Streak</div>
+        </div>
+      </div>
+
+      <div class="planner-reflection-form">
+        <div class="form-group">
+          <label>What clicked today?</label>
+          <textarea id="planner-reflection-clicked" placeholder="e.g. The slow practice method finally made the run in bar 24 feel natural..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>What didn't?</label>
+          <textarea id="planner-reflection-didnt" placeholder="e.g. Still rushing the crescendo in the second phrase..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>One thing to carry into tomorrow:</label>
+          <textarea id="planner-reflection-carry" placeholder="e.g. Start every session with 5 minutes of long tones."></textarea>
+        </div>
+      </div>
+
+      <div class="planner-actions">
+        <button class="btn-ghost" onclick="plannerSkipReflection()">Skip</button>
+        <button class="btn-primary" onclick="plannerSaveReflection()">Save Reflection</button>
+      </div>
+    </div>
+
+    <!-- History -->
+    <div class="planner-history-section" id="planner-history-section">
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;margin-bottom:1.5rem;color:var(--text);">Recent Sessions</h3>
+      <div id="planner-history-list" class="planner-history-list">
+        <p style="color:var(--muted);font-size:0.9rem;text-align:center;padding:2rem;">No sessions yet. Start your first practice above.</p>
+      </div>
+    </div>
   </div>
 </div>
 
