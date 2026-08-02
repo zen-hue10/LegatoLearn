@@ -1,33 +1,49 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>LegatoLearn — VJC Symphonic Band</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="variables.css">
   <link rel="stylesheet" href="layout.css">
   <link rel="stylesheet" href="components.css">
   <link rel="stylesheet" href="animations.css">
   <link rel="stylesheet" href="pages.css">
   <link rel="stylesheet" href="planner_styles.css">
+  <link rel="stylesheet" href="sidebar.css">
 </head>
 <body>
 
-<!-- NAV -->
+<!-- ═══════════════════════════════════════════════════════════════════ NAV ═══════════════════════════════════════════════════════════════════ -->
 <nav>
   <a class="nav-logo" href="#/home">Legato<span>Learn</span></a>
   <ul class="nav-links">
     <li><a href="#/home" class="active" id="nav-home">Home</a></li>
-    <li><a href="#/dashboard" id="nav-dashboard">Dashboard</a></li>
     <li><a href="#/learn" id="nav-learn">Learn</a></li>
     <li><a href="#/planner" id="nav-planner">Planner</a></li>
-    <li><a href="#/tips" id="nav-tips">Tips & Tricks</a></li>
-    <li><a href="#/framework" id="nav-framework">The Framework</a></li>
-    <li><a href="#/schools" id="nav-schools">For Schools</a></li>
+    <li><a href="#/framework" id="nav-framework">Framework</a></li>
     <li><a href="#/about" id="nav-about">About</a></li>
+    <li class="nav-more-wrap">
+      <button class="nav-more-btn" id="navMoreBtn" onclick="toggleMoreDropdown(event)">More</button>
+      <div class="nav-more-dropdown" id="navMoreDropdown">
+        <a href="#" onclick="navigateTo('tips');closeMoreDropdown();return false;">Tips & Tricks</a>
+        <a href="#" onclick="navigateTo('schools');closeMoreDropdown();return false;">For Schools</a>
+      </div>
+    </li>
   </ul>
   <div class="nav-right">
+    <!-- Dashboard sidebar trigger -->
+    <button class="nav-icon-btn" id="navDashBtn" onclick="toggleSidebar()" title="Dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <rect x="3" y="3" width="7" height="7"/>
+        <rect x="14" y="3" width="7" height="7"/>
+        <rect x="3" y="14" width="7" height="7"/>
+        <rect x="14" y="14" width="7" height="7"/>
+      </svg>
+      <span class="nav-badge" id="navDashBadge">0</span>
+    </button>
+
     <div class="theme-toggle">
       <button class="theme-btn" onclick="toggleThemeMenu()">🎨 Theme</button>
       <div class="theme-dropdown" id="themeDropdown">
@@ -44,8 +60,8 @@
           <span class="theme-swatch" style="background:#C4782A"></span> Warm Amber
         </div>
         <div class="theme-option" onclick="setTheme('mono')">
-      <span class="theme-swatch" style="background:#121212"></span> Dark Mode
-      </div>
+          <span class="theme-swatch" style="background:#121212"></span> Dark Mode
+        </div>
       </div>
     </div>
     <button class="hamburger" onclick="toggleMobileMenu()">
@@ -54,32 +70,44 @@
   </div>
 </nav>
 
-<!-- MOBILE MENU -->
-<div class="mobile-menu" id="mobileMenu">
-  <a href="#/home" onclick="toggleMobileMenu()">Home</a>
-  <a href="#/dashboard" onclick="toggleMobileMenu()">Dashboard</a>
-  <a href="#/learn" onclick="toggleMobileMenu()">Learn</a>
-  <a href="#/planner" onclick="toggleMobileMenu()">Planner</a>
-  <a href="#/tips" onclick="toggleMobileMenu()">Tips & Tricks</a>
-  <a href="#/framework" onclick="toggleMobileMenu()">The Framework</a>
-  <a href="#/schools" onclick="toggleMobileMenu()">For Schools</a>
-  <a href="#/about" onclick="toggleMobileMenu()">About</a>
+<!-- ═══════════════════════════════════════════════════════════════════ DASHBOARD SIDEBAR ═══════════════════════════════════════════════════════════════════ -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+<div class="sidebar-panel" id="sidebarPanel">
+  <div class="sidebar-header">
+    <h2>Dashboard</h2>
+    <button class="sidebar-close" onclick="toggleSidebar()">✕</button>
+  </div>
+  <div class="sidebar-body" id="sidebarBody">
+    <!-- Populated by JS -->
+  </div>
 </div>
 
-<!-- ══════════════════ HOME PAGE ══════════════════ -->
+<!-- ═══════════════════════════════════════════════════════════════════ MOBILE MENU ═══════════════════════════════════════════════════════════════════ -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#" onclick="navigateTo('home');toggleMobileMenu();return false;">Home</a>
+  <a href="#" onclick="navigateTo('dashboard');toggleMobileMenu();return false;">Dashboard</a>
+  <a href="#" onclick="navigateTo('learn');toggleMobileMenu();return false;">Learn</a>
+  <a href="#" onclick="navigateTo('planner');toggleMobileMenu();return false;">Planner</a>
+  <a href="#" onclick="navigateTo('tips');toggleMobileMenu();return false;">Tips & Tricks</a>
+  <a href="#" onclick="navigateTo('framework');toggleMobileMenu();return false;">Framework</a>
+  <a href="#" onclick="navigateTo('schools');toggleMobileMenu();return false;">For Schools</a>
+  <a href="#" onclick="navigateTo('about');toggleMobileMenu();return false;">About</a>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ HOME PAGE ═══════════════════════════════════════════════════════════════════ -->
 <div class="page active" id="page-home">
   <div class="hero">
     <div class="hero-left">
       <div class="hero-eyebrow fade-up fade-up-1">Victoria Junior College Symphonic Band</div>
       <h1 class="hero-title fade-up fade-up-2">Built by<br><em>students.</em><br>For students.</h1>
-      <p class="hero-sub fade-up fade-up-3">A student-led resource hub for intentional musical growth. Learn smarter practice systems, transferable life skills, and the mindset to keep improving - in band and beyond.</p>
+      <p class="hero-sub fade-up fade-up-3">A student-led resource hub for intentional musical growth. Learn smarter practice systems, transferable life skills, and the mindset to keep improving — in band and beyond.</p>
       <div class="hero-cta fade-up fade-up-4">
         <button class="btn-primary" onclick="navigateTo('learn')">Start Learning →</button>
         <button class="btn-ghost" onclick="navigateTo('framework')">Our Framework</button>
       </div>
     </div>
     <div class="hero-right">
-        <img src="https://raw.githubusercontent.com/zen-hue10/LegatoLearn/main/images/IMG_0285.jpeg" alt="Music note" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:0.99;">
+      <img src="https://raw.githubusercontent.com/zen-hue10/LegatoLearn/main/images/IMG_0285.jpeg" alt="Music note" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:0.99;">
       <div class="hero-stat-stack">
         <div class="hero-stat">
           <div class="hero-stat-num">1</div>
@@ -98,87 +126,10 @@
   </div>
 </div>
 
-<!-- ══════════════════ DASHBOARD PAGE ══════════════════ -->
-<div class="page" id="page-dashboard">
-  <div class="section">
-    <div class="section-label">Your Progress</div>
-    <h2 class="section-title">Dashboard</h2>
-    <p class="section-sub">A running record of what you've watched and what's next.</p>
+<!-- ═══════════════════════════════════════════════════════════════════ DASHBOARD PAGE (empty — content in sidebar) ═══════════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-dashboard"></div>
 
-    <div class="featured-video-wrap" style="margin-bottom:1.5rem;">
-      <div class="featured-video-meta" style="align-items:flex-start;gap:2rem;flex-wrap:wrap;">
-        <svg viewBox="0 0 140 140" width="140" height="140" role="img" aria-labelledby="ringsTitle ringsDesc" style="flex-shrink:0;">
-          <title id="ringsTitle">Framework progress rings</title>
-          <desc id="ringsDesc">Lesson completion percentage for each of the three framework levels</desc>
-          <g transform="rotate(-90 70 70)">
-            <circle cx="70" cy="70" r="54" fill="none" stroke="var(--border)" stroke-width="10"/>
-            <circle id="ringIndividual" cx="70" cy="70" r="54" fill="none" stroke="#B5181B" stroke-width="10" stroke-linecap="round" stroke-dasharray="0 339.3"/>
-            <circle cx="70" cy="70" r="40" fill="none" stroke="var(--border)" stroke-width="10"/>
-            <circle id="ringMusic" cx="70" cy="70" r="40" fill="none" stroke="#C4782A" stroke-width="10" stroke-linecap="round" stroke-dasharray="0 251.3"/>
-            <circle cx="70" cy="70" r="26" fill="none" stroke="var(--border)" stroke-width="10"/>
-            <circle id="ringEnsemble" cx="70" cy="70" r="26" fill="none" stroke="#2D7D46" stroke-width="10" stroke-linecap="round" stroke-dasharray="0 163.4"/>
-          </g>
-        </svg>
-        <div style="display:flex;flex-direction:column;gap:10px;min-width:180px;flex:1;">
-          <div style="display:flex;align-items:center;justify-content:space-between;">
-            <span style="display:flex;align-items:center;gap:8px;font-size:0.85rem;"><span style="width:9px;height:9px;border-radius:50%;background:#B5181B;display:inline-block;flex-shrink:0;"></span>Individual practice</span>
-            <span style="font-size:0.85rem;color:var(--muted);" id="ringIndividualLabel">0%</span>
-          </div>
-          <div style="display:flex;align-items:center;justify-content:space-between;">
-            <span style="display:flex;align-items:center;gap:8px;font-size:0.85rem;"><span style="width:9px;height:9px;border-radius:50%;background:#C4782A;display:inline-block;flex-shrink:0;"></span>Music making</span>
-            <span style="font-size:0.85rem;color:var(--muted);" id="ringMusicLabel">0%</span>
-          </div>
-          <div style="display:flex;align-items:center;justify-content:space-between;">
-            <span style="display:flex;align-items:center;gap:8px;font-size:0.85rem;"><span style="width:9px;height:9px;border-radius:50%;background:#2D7D46;display:inline-block;flex-shrink:0;"></span>Ensemble skills</span>
-            <span style="font-size:0.85rem;color:var(--muted);" id="ringEnsembleLabel">0%</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="featured-video-wrap" style="margin-bottom:1.5rem;">
-      <div class="featured-video-meta" style="flex-direction:column;align-items:flex-start;gap:0.75rem;">
-        <span class="featured-tag">Practice timer</span>
-        <div style="display:flex;align-items:center;gap:1.25rem;width:100%;flex-wrap:wrap;">
-          <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--text);" id="timerElapsedDisplay">0:00</div>
-          <button class="btn-primary" id="timerToggleBtn" onclick="handleTimerToggle()">Start practice session</button>
-        </div>
-        <div style="width:100%;">
-          <div style="height:6px;border-radius:999px;background:var(--border);overflow:hidden;">
-            <div id="timerTodayProgressBar" style="height:100%;width:0%;background:var(--primary);border-radius:999px;transition:width 0.3s;"></div>
-          </div>
-          <div style="font-size:0.78rem;color:var(--muted);margin-top:0.4rem;" id="timerTodayProgress">0:00 / 5:00 to count today</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="add-video-section" style="margin-top:0;margin-bottom:1.5rem;">
-      <h3>Reflection Journal</h3>
-      <p>A quick note on how practice went today — what clicked, what didn't.</p>
-      <div class="form-group" style="margin-bottom:1rem;">
-        <textarea id="reflectionInput" placeholder="What did you work on? What felt hard? What will you try next time?"></textarea>
-      </div>
-      <button class="btn-primary" onclick="saveReflection()">Save reflection →</button>
-
-      <div id="reflectionHistory" style="margin-top:1.75rem;display:flex;flex-direction:column;gap:0.75rem;"></div>
-    </div>
-
-    <div id="dashboardContinue"></div>
-
-    <div class="form-row" style="margin-top:1.5rem;">
-      <div class="add-video-section" style="margin-top:0;">
-        <h3 style="font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--primary);margin-bottom:0.4rem;">Lessons completed</h3>
-        <p style="font-size:2rem;font-family:'Playfair Display',serif;font-weight:700;color:var(--text);margin:0;" id="dashboardCompletedCount">0</p>
-      </div>
-      <div class="add-video-section" style="margin-top:0;">
-        <h3 style="font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--primary);margin-bottom:0.4rem;">Current streak</h3>
-        <p style="font-size:2rem;font-family:'Playfair Display',serif;font-weight:700;color:var(--text);margin:0;" id="dashboardStreakCount">0 days</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════ LEARN PAGE ══════════════════ -->
+<!-- ═══════════════════════════════════════════════════════════════════ LEARN PAGE ═══════════════════════════════════════════════════════════════════ -->
 <div class="page" id="page-learn">
   <div class="section">
     <div class="section-label">Level Up</div>
@@ -192,7 +143,6 @@
       <button class="filter-chip" data-cat="ensemble" onclick="filterVideos('ensemble', this, 'learn')">Ensemble Skills</button>
     </div>
 
-    <!-- Featured -->
     <div class="featured-video-wrap">
       <div class="featured-video-player" id="featuredPlayer">
         <div class="video-placeholder" onclick="openModal('','Featured Tutorial','Click the card below or add a YouTube URL to load a video here.')">
@@ -206,32 +156,10 @@
       </div>
     </div>
 
-    <!-- Video grid -->
-    <div class="video-grid" id="learnGrid">
-      <!-- populated by JS -->
-    </div>
-
+    <div class="video-grid" id="learnGrid"></div>
   </div>
 </div>
 
-<!-- ══════════════════ TIPS PAGE ══════════════════ -->
-<div class="page" id="page-tips">
-  <div class="section">
-    <div class="section-label">Quick Wins</div>
-    <h2 class="section-title">Tips & Tricks</h2>
-    <p class="section-sub">Short-form videos — 1 to 3 minutes each. Fast, actionable, and immediately applicable.</p>
-
-    <div class="filter-bar">
-      <button class="filter-chip active" data-cat="all" onclick="filterVideos('all', this, 'tips')">All</button>
-      <button class="filter-chip" data-cat="rhythm" onclick="filterVideos('rhythm', this, 'tips')">Rhythm</button>
-      <button class="filter-chip" data-cat="dynamics" onclick="filterVideos('dynamics', this, 'tips')">Dynamics</button>
-      <button class="filter-chip" data-cat="tone" onclick="filterVideos('tone', this, 'tips')">Tone</button>
-      <button class="filter-chip" data-cat="mindset" onclick="filterVideos('mindset', this, 'tips')">Mindset</button>
-    </div>
-
-    <div class="video-grid" id="tipsGrid"></div>
-  </div>
-</div>
 <!-- ═══════════════════════════════════════════════════════════════════ PLANNER PAGE ═══════════════════════════════════════════════════════════════════ -->
 <div class="page" id="page-planner">
   <div class="section">
@@ -441,7 +369,26 @@
   </div>
 </div>
 
-<!-- ══════════════════ FRAMEWORK PAGE ══════════════════ -->
+<!-- ═══════════════════════════════════════════════════════════════════ TIPS PAGE ═══════════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-tips">
+  <div class="section">
+    <div class="section-label">Quick Wins</div>
+    <h2 class="section-title">Tips & Tricks</h2>
+    <p class="section-sub">Short-form videos — 1 to 3 minutes each. Fast, actionable, and immediately applicable.</p>
+
+    <div class="filter-bar">
+      <button class="filter-chip active" data-cat="all" onclick="filterVideos('all', this, 'tips')">All</button>
+      <button class="filter-chip" data-cat="rhythm" onclick="filterVideos('rhythm', this, 'tips')">Rhythm</button>
+      <button class="filter-chip" data-cat="dynamics" onclick="filterVideos('dynamics', this, 'tips')">Dynamics</button>
+      <button class="filter-chip" data-cat="tone" onclick="filterVideos('tone', this, 'tips')">Tone</button>
+      <button class="filter-chip" data-cat="mindset" onclick="filterVideos('mindset', this, 'tips')">Mindset</button>
+    </div>
+
+    <div class="video-grid" id="tipsGrid"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ FRAMEWORK PAGE ═══════════════════════════════════════════════════════════════════ -->
 <div class="page" id="page-framework">
   <div class="section">
     <div class="section-label">Our Method</div>
@@ -452,7 +399,7 @@
       <div class="framework-card">
         <div class="framework-num">01</div>
         <h3>Individual Practice</h3>
-        <p>The mechanics of intentional improvement. Practise smarter, not just harder.</p>
+        <p>The mechanics of intentional improvement. Practice smarter, not just harder.</p>
         <ul>
           <li>Slow practice systems</li>
           <li>Isolating difficult passages</li>
@@ -491,7 +438,7 @@
   </div>
 </div>
 
-<!-- ══════════════════ SCHOOLS PAGE ══════════════════ -->
+<!-- ═══════════════════════════════════════════════════════════════════ SCHOOLS PAGE ═══════════════════════════════════════════════════════════════════ -->
 <div class="page" id="page-schools">
   <div class="section">
     <div class="schools-hero">
@@ -499,44 +446,39 @@
       <p>The gap between effort and intentional growth exists in every school band in Singapore. This framework was built to be shared. If you're a band director, teacher-in-charge, or student leader who wants to bring this to your school, reach out below.</p>
     </div>
 
-    <form class="contact-form" action="https://formspree.io/f/maqvzljl" method="POST">
-  <h3>Request a Collaboration</h3>
-  <p>Fill in your details and we'll be in touch about how we can support your band's growth journey.</p>
-  
-  <div class="form-row">
-    <div class="form-group">
-      <label>Your Name</label>
-      <input type="text" name="name" placeholder="Full name" required/>
-    </div>
-    <div class="form-group">
-      <label>School</label>
-      <input type="text" name="school" placeholder="School name" required/>
-    </div>
-  </div>
-  
-  <div class="form-row">
-    <div class="form-group">
-      <label>Role</label>
-      <select name="role">
-        <option>Band Director / Teacher-in-Charge</option>
-        <option>Student Leader / EXCO</option>
-        <option>Other</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Email</label>
-      <input type="email" name="email" placeholder="youremail@gmail.com" required/>
-    </div>
-  </div>
-  
-  <div class="form-group" style="margin-bottom:1rem">
-    <label>Message</label>
-    <textarea name="message" placeholder="Tell us about your band and what you're hoping to achieve..."></textarea>
-  </div>
-  
-  <button class="btn-primary" type="submit">Send Message →</button>
-</form>
-
+    <form class="contact-form" action="https://formspree.io/f/maqvlzjl" method="POST">
+      <h3>Request a Collaboration</h3>
+      <p>Fill in your details and we'll be in touch about how we can support your band's growth journey.</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Your Name</label>
+          <input type="text" name="name" placeholder="Full name" required/>
+        </div>
+        <div class="form-group">
+          <label>School</label>
+          <input type="text" name="school" placeholder="School name" required/>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Role</label>
+          <select name="role">
+            <option>Band Director / Teacher-in-Charge</option>
+            <option>Student Leader / EXCO</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email" placeholder="youremail@gmail.com" required/>
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:1rem;">
+        <label>Message</label>
+        <textarea name="message" placeholder="Tell us about your band and what you're hoping to achieve..."></textarea>
+      </div>
+      <button class="btn-primary" type="submit">Send Message →</button>
+    </form>
 
     <div class="section-label" style="margin-top:3rem">What Members Say</div>
     <h3 style="font-family:'Playfair Display',serif;font-size:1.75rem;font-weight:700;margin-bottom:0.5rem;color:var(--text)">Member Reflections</h3>
@@ -544,83 +486,64 @@
       <div class="testimonial-card">
         <div class="testimonial-quote">"</div>
         <p class="testimonial-text">I never thought about practice this way before. The slow practice technique changed how I approach every difficult passage.</p>
-        <div class="testimonial-author">Band Member · VJC Symphonic Band</div>
+        <div class="testimonial-author">Band Member — VJC Symphonic Band</div>
       </div>
       <div class="testimonial-card">
         <div class="testimonial-quote">"</div>
         <p class="testimonial-text">Sectionals feel different now. We have a shared language for improvement and members actually self-direct instead of waiting to be told.</p>
-        <div class="testimonial-author">Section Leader · VJC Symphonic Band</div>
+        <div class="testimonial-author">Section Leader — VJC Symphonic Band</div>
       </div>
       <div class="testimonial-card">
         <div class="testimonial-quote">"</div>
         <p class="testimonial-text">The ensemble skills level made me realise that my growth is connected to everyone around me. That changed how I listen during rehearsals.</p>
-        <div class="testimonial-author">Band Member · VJC Symphonic Band</div>
+        <div class="testimonial-author">Band Member — VJC Symphonic Band</div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════ ABOUT PAGE ══════════════════ -->
+<!-- ═══════════════════════════════════════════════════════════════════ ABOUT PAGE ═══════════════════════════════════════════════════════════════════ -->
 <div class="page" id="page-about">
   <div class="section">
-<div class="about-header">
-  <div class="about-header-logo">
-    <img
-      src="https://raw.githubusercontent.com/zen-hue10/LegatoLearn/main/images/IMG_0282.png"
-      alt="VJC Symphonic Band Logo"
-      onerror="this.style.display='none';this.nextElementSibling.style.display='block';"
-    />
-    <div class="about-header-logo-fallback" style="display:none;">VJC<br>Symphonic<br>Band</div>
-  </div>
-  <div class="about-header-text">
-    <div class="section-label">Victoria Junior College Symphonic Band</div>
-    <div class="about-header-eyebrow">Legato<span style="color:var(--text);font-style:italic;font-weight:400;">Learn</span> — <span style="color:var(--primary);font-style:italic;">built from within.</span></div>
-  </div>
-</div>
+    <div class="about-header">
+      <div class="about-header-logo">
+        <img src="https://raw.githubusercontent.com/zen-hue10/LegatoLearn/main/images/IMG_0282.png" alt="VJC Symphonic Band Logo" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"/>
+        <div class="about-header-logo-fallback" style="display:none;">VJC<br>Symphonic<br>Band</div>
+      </div>
+      <div class="about-header-text">
+        <div class="section-label">Victoria Junior College Symphonic Band</div>
+        <div class="about-header-eyebrow">Legato<span style="color:var(--text);font-style:italic;font-weight:400;">Learn</span> — <span style="color:var(--primary);font-style:italic;">built from within.</span></div>
+      </div>
+    </div>
     <div class="about-grid">
       <div class="about-text">
         <div class="section-label">Our Story</div>
         <h2>Two students.<br>One idea.<br>A culture changed.</h2>
         <p>LegatoLearn began with a simple observation — our band members were working hard, but intentional improvement wasn't always the result. Rather than accepting this, we chose to build something.</p>
-        <p>A workshop, across every section in the band, we introduced a three-level framework for growth that has since changed how our members practise, reflect, and lead themselves.</p>
+        <p>A workshop, across every section in the band, we introduced a three-level framework for growth that has since changed how our members practice, reflect, and lead themselves.</p>
         <p>This website is the next step. We believe every school band in Singapore deserves access to what we built. So we're sharing it.</p>
       </div>
       <div class="founder-cards">
-
-  <!-- ZEN'S CARD -->
-  <div class="founder-card">
-    <img
-      class="founder-photo"
-      src="https://raw.githubusercontent.com/zen-hue10/LegatoLearn/main/images/IMG_0284.jpeg"
-      alt="Zen Tay Tze Ern"
-      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
-    />
-    <div class="founder-photo-fallback" style="display:none;">Z</div>
-    <div class="founder-card-body">
-      <div class="founder-name">Zen Tay Tze Ern</div>
-      <div class="founder-role">Band EXCO · 25S41</div>
-      <p class="founder-desc">Co-designer and Student Conductor of VJCSB 2026. Believes that real leadership begins with choosing to act before being asked.</p>
+        <div class="founder-card">
+          <img class="founder-photo" src="https://raw.githubusercontent.com/zen-hue10/LegatoLearn/main/images/IMG_0284.jpeg" alt="Zen Tay Tze Ern" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"/>
+          <div class="founder-photo-fallback" style="display:none;">Z</div>
+          <div class="founder-card-body">
+            <div class="founder-name">Zen Tay Tze Ern</div>
+            <div class="founder-role">Band EXCO — 25S41</div>
+            <p class="founder-desc">Co-designer and Student Conductor of VJCSB 2026. Believes that real leadership begins with choosing to act before being asked.</p>
+          </div>
+        </div>
+        <div class="founder-card">
+          <img class="founder-photo" src="https://raw.githubusercontent.com/zen-hue10/LegatoLearn/main/images/IMG_9192.jpeg" alt="Wong Zhen Yu Rayne" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"/>
+          <div class="founder-photo-fallback" style="display:none;">R</div>
+          <div class="founder-card-body">
+            <div class="founder-name">Wong Zhen Yu Rayne</div>
+            <div class="founder-role">Band EXCO — 25S63</div>
+            <p class="founder-desc">Co-designer and Vice-President of VJCSB 2026. Believes that the habits built in a CCA follow a person for life.</p>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-
-  <!-- RAYNE'S CARD -->
-  <div class="founder-card">
-    <img
-      class="founder-photo"
-      src="https://raw.githubusercontent.com/zen-hue10/LegatoLearn/main/images/IMG_9192.jpeg"
-      alt="Wong Zhen Yu Rayne"
-      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
-    />
-    <div class="founder-photo-fallback" style="display:none;">R</div>
-    <div class="founder-card-body">
-      <div class="founder-name">Wong Zhen Yu Rayne</div>
-      <div class="founder-role">Band EXCO · 25S63</div>
-      <p class="founder-desc">Co-designer and Vice-President of VJCSB 2026. Believes that the habits built in a CCA follow a person for life.</p>
-    </div>
-  </div>
-        
-</div>
-</div> 
     <div class="vision-block">
       <h3>The Vision Ahead</h3>
       <p>The gap between effort and growth exists in every school band in Singapore. We built this framework in VJCSB — but we believe it belongs to every student musician who wants to grow smarter. Our goal is to make LegatoLearn the go-to student-led resource for Singapore's band community, built by students who understand the experience from the inside.</p>
@@ -628,26 +551,21 @@
   </div>
 </div>
 
-<!-- FOOTER -->
+<!-- ═══════════════════════════════════════════════════════════════════ FOOTER ═══════════════════════════════════════════════════════════════════ -->
 <footer>
   <div style="display:flex;align-items:center;gap:1rem;">
     <div style="width:40px;height:40px;border-radius:8px;background:var(--accent);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">
-      <img
-        src="https://raw.githubusercontent.com/zen-hue10/LegatoLearn/main/images/IMG_0282.png"
-        alt="VJC Symphonic Band"
-        style="width:100%;height:100%;object-fit:contain;padding:4px;"
-        onerror="this.style.display='none';"
-      />
+      <img src="https://raw.githubusercontent.com/zen-hue10/LegatoLearn/main/images/IMG_0282.png" alt="VJC Symphonic Band" style="width:100%;height:100%;object-fit:contain;padding:4px;" onerror="this.style.display='none';"/>
     </div>
     <div>
       <div class="footer-logo">Legato<span style="color:var(--text);font-style:italic;font-weight:400;">Learn</span></div>
       <div class="footer-copy" style="margin-top:0.15rem;">Student-led Resource Hub</div>
     </div>
   </div>
-  <div class="footer-copy">© 2026 VJC Symphonic Band · Built for the Singapore band community</div>
+  <div class="footer-copy">© 2026 VJC Symphonic Band — Built for the Singapore band community</div>
 </footer>
 
-<!-- VIDEO MODAL -->
+<!-- ═══════════════════════════════════════════════════════════════════ VIDEO MODAL ═══════════════════════════════════════════════════════════════════ -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">✕</button>
@@ -660,42 +578,52 @@
   </div>
 </div>
 
-<!-- TOAST -->
+<!-- ═══════════════════════════════════════════════════════════════════ TOAST ═══════════════════════════════════════════════════════════════════ -->
 <div class="toast" id="toast"></div>
 
 <script src="storage.js"></script>
-  <script src="planner.js"></script>
+<script src="planner.js"></script>
 <script>
-  // ── PAGE NAVIGATION (hash-based router) ──
+  // ════════ PAGE NAVIGATION (hash-based router) ════════
   const VALID_PAGES = ['home', 'dashboard', 'learn', 'planner', 'tips', 'framework', 'schools', 'about'];
 
-  // Sets the URL — this is what buttons call. Real <a href="#/..."> links
-  // don't need this at all; the browser changes the hash on its own.
-  function navigateTo(page) {
-    location.hash = '#/' + page;
-  }
+  function navigateTo(page) { location.hash = '#/' + page; }
 
-  // Reads whatever the current URL hash is and shows the matching page.
-  // Runs on: initial page load, every hash change (including the browser's
-  // back/forward buttons, which change the hash automatically).
   function renderPageFromHash() {
     const requested = location.hash.replace(/^#\/?/, '');
     const page = VALID_PAGES.includes(requested) ? requested : 'home';
 
+    closeSidebar();
+
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    document.querySelectorAll('.nav-links > li > a').forEach(a => a.classList.remove('active'));
     document.getElementById('page-' + page).classList.add('active');
+
+    const moreBtn = document.getElementById('navMoreBtn');
+    if (moreBtn) {
+      if (page === 'tips' || page === 'schools') {
+        moreBtn.classList.add('active');
+      } else {
+        moreBtn.classList.remove('active');
+      }
+    }
+
     const navLink = document.getElementById('nav-' + page);
     if (navLink) navLink.classList.add('active');
     window.scrollTo(0, 0);
 
-    if (page === 'dashboard') renderDashboard();
+    if (page === 'dashboard') {
+      openSidebar();
+      history.replaceState(null, '', '#/home');
+      document.getElementById('page-home').classList.add('active');
+      document.getElementById('nav-home').classList.add('active');
+    }
     if (page === 'planner') plannerLoadHistory();
   }
 
   window.addEventListener('hashchange', renderPageFromHash);
 
-  // ── THEME ──
+  // ════════ THEME MANAGEMENT ════════
   function setTheme(theme) {
     if (theme === 'victorian') {
       document.documentElement.removeAttribute('data-theme');
@@ -715,18 +643,193 @@
     }
   });
 
-  // ── MOBILE MENU ──
   function toggleMobileMenu() {
     document.getElementById('mobileMenu').classList.toggle('open');
   }
 
-  // ── VIDEO DATA ──
-  // Videos are no longer added through the site — they're curated by the
-  // owner directly in videos.json. This just loads and displays them.
+  // ════════ MORE DROPDOWN ════════
+  function toggleMoreDropdown(e) {
+    e.stopPropagation();
+    const dropdown = document.getElementById('navMoreDropdown');
+    const btn = document.getElementById('navMoreBtn');
+    dropdown.classList.toggle('open');
+    btn.classList.toggle('open');
+  }
+
+  function closeMoreDropdown() {
+    const dropdown = document.getElementById('navMoreDropdown');
+    const btn = document.getElementById('navMoreBtn');
+    if (dropdown) dropdown.classList.remove('open');
+    if (btn) btn.classList.remove('open');
+  }
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.nav-more-wrap')) {
+      closeMoreDropdown();
+    }
+  });
+
+  // ════════ SIDEBAR DASHBOARD ════════
+  function toggleSidebar() {
+    const panel = document.getElementById('sidebarPanel');
+    if (panel.classList.contains('open')) closeSidebar(); else openSidebar();
+  }
+
+  function openSidebar() {
+    document.getElementById('sidebarOverlay').classList.add('open');
+    document.getElementById('sidebarPanel').classList.add('open');
+    renderSidebar();
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeSidebar() {
+    document.getElementById('sidebarOverlay').classList.remove('open');
+    document.getElementById('sidebarPanel').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function renderSidebar() {
+    const body = document.getElementById('sidebarBody');
+    const completed = getCompletedMap();
+    const completedCount = Object.keys(completed).length;
+    const streak = calculateStreak();
+    const todaySeconds = getTodaySeconds();
+    const timerText = formatTime(todaySeconds);
+    const nextUp = videos.learn.find(v => !completed[v.id]);
+
+    // Framework rings
+    const ringHtml = `
+      <div class="sidebar-block">
+        <h3>Framework Progress</h3>
+        <div style="display:flex;align-items:center;gap:1.5rem;">
+          <svg viewBox="0 0 140 140" width="100" height="100" style="flex-shrink:0;">
+            <g transform="rotate(-90 70 70)">
+              <circle cx="70" cy="70" r="54" fill="none" stroke="var(--border)" stroke-width="10"/>
+              <circle cx="70" cy="70" r="54" fill="none" stroke="#B5181B" stroke-width="10" stroke-linecap="round" id="sidebarRingIndividual" stroke-dasharray="0 339.3"/>
+              <circle cx="70" cy="70" r="40" fill="none" stroke="var(--border)" stroke-width="10"/>
+              <circle cx="70" cy="70" r="40" fill="none" stroke="#C4782A" stroke-width="10" stroke-linecap="round" id="sidebarRingMusic" stroke-dasharray="0 251.3"/>
+              <circle cx="70" cy="70" r="26" fill="none" stroke="var(--border)" stroke-width="10"/>
+              <circle cx="70" cy="70" r="26" fill="none" stroke="#2D7D46" stroke-width="10" stroke-linecap="round" id="sidebarRingEnsemble" stroke-dasharray="0 163.4"/>
+            </g>
+          </svg>
+          <div style="display:flex;flex-direction:column;gap:6px;font-size:0.8rem;">
+            <span style="display:flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;border-radius:50%;background:#B5181B;"></span> Individual</span>
+            <span style="display:flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;border-radius:50%;background:#C4782A;"></span> Music Making</span>
+            <span style="display:flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;border-radius:50%;background:#2D7D46;"></span> Ensemble</span>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Timer block
+    const timerHtml = `
+      <div class="sidebar-block">
+        <h3>Today's Practice</h3>
+        <div class="sidebar-timer-row">
+          <div class="sidebar-timer-display" id="sidebarTimerDisplay">${timerText}</div>
+          <button class="btn-primary" id="sidebarTimerBtn" onclick="handleSidebarTimer()" style="font-size:0.8rem;padding:8px 16px;">${timerRunning ? 'Stop' : 'Start'}</button>
+        </div>
+        <div style="margin-top:0.75rem;">
+          <div style="height:5px;border-radius:999px;background:var(--border);overflow:hidden;">
+            <div style="height:100%;width:${Math.min(todaySeconds/300*100,100)}%;background:var(--primary);border-radius:999px;transition:width 0.3s;"></div>
+          </div>
+          <div style="font-size:0.7rem;color:var(--muted);margin-top:0.3rem;">
+            ${todaySeconds >= 300 ? '✓ Today counts!' : formatTime(todaySeconds) + ' / 5:00 for streak'}
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Stats
+    const statsHtml = `
+      <div class="sidebar-stats-row">
+        <div class="sidebar-stat">
+          <div class="sidebar-stat-value">${completedCount}</div>
+          <div class="sidebar-stat-label">Lessons</div>
+        </div>
+        <div class="sidebar-stat">
+          <div class="sidebar-stat-value">${streak}</div>
+          <div class="sidebar-stat-label">Day Streak</div>
+        </div>
+      </div>
+    `;
+
+    // Continue learning
+    let continueHtml = '';
+    if (nextUp) {
+      continueHtml = `
+        <div class="sidebar-block sidebar-continue" onclick="toggleSidebar();openModal('${escapeHtml(nextUp.id)}','${nextUp.title.replace(/'/g,"\\'")}','${(nextUp.desc||'').replace(/'/g,"\\'")}')">
+          <div class="sidebar-continue-tag">Continue Learning</div>
+          <div class="sidebar-continue-title">${escapeHtml(nextUp.title)}</div>
+        </div>
+      `;
+    }
+
+    // Reflections
+    const reflections = getReflections();
+    let reflectionsHtml = '';
+    if (reflections.length > 0) {
+      reflectionsHtml = `
+        <div class="sidebar-block">
+          <h3>Reflections</h3>
+          ${reflections.slice(0, 5).map(r => `
+            <div class="sidebar-reflection-item">
+              <div class="sidebar-reflection-date">${escapeHtml(formatReflectionDate(r.date))}</div>
+              <div class="sidebar-reflection-text">${escapeHtml(r.text).replace(/\n/g, '<br>')}</div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    } else {
+      reflectionsHtml = `
+        <div class="sidebar-block">
+          <h3>Reflections</h3>
+          <p style="font-size:0.8rem;color:var(--muted);">No reflections yet. Save one from the Planner or Dashboard.</p>
+        </div>
+      `;
+    }
+
+    body.innerHTML = ringHtml + timerHtml + statsHtml + continueHtml + reflectionsHtml;
+    updateSidebarRings();
+  }
+
+  function updateSidebarRings() {
+    const completed = getCompletedMap();
+    const configs = {
+      individual: { r: 54, id: 'sidebarRingIndividual' },
+      music: { r: 40, id: 'sidebarRingMusic' },
+      ensemble: { r: 26, id: 'sidebarRingEnsemble' }
+    };
+    Object.entries(configs).forEach(([cat, cfg]) => {
+      const lessons = videos.learn.filter(v => v.cat === cat);
+      const pct = lessons.length === 0 ? 0 : lessons.filter(v => completed[v.id]).length / lessons.length;
+      const circ = 2 * Math.PI * cfg.r;
+      const dash = circ * pct;
+      const el = document.getElementById(cfg.id);
+      if (el) el.setAttribute('stroke-dasharray', `${dash.toFixed(1)} ${(circ - dash).toFixed(1)}`);
+    });
+  }
+
+  function handleSidebarTimer() {
+    handleTimerToggle();
+    setTimeout(renderSidebar, 50);
+  }
+
+  function updateNavBadge() {
+    const badge = document.getElementById('navDashBadge');
+    if (!badge) return;
+    const streak = calculateStreak();
+    if (streak > 0) {
+      badge.textContent = streak;
+      badge.classList.add('show');
+    } else {
+      badge.classList.remove('show');
+    }
+  }
+
+  // ════════ VIDEO SYSTEM & DASHBOARD ════════
   const videos = { learn: [], tips: [] };
 
-  // Escapes HTML special characters so a stray "<" or "&" in a title/desc
-  // can never be interpreted as a real HTML tag when we insert it below.
   function escapeHtml(str) {
     const div = document.createElement('div');
     div.textContent = str || '';
@@ -747,11 +850,13 @@
     renderGrid('learn');
     renderGrid('tips');
     if (videos.learn.length > 0) setFeatured(videos.learn[0]);
-    renderDashboard();
+    updateNavBadge();
   }
 
-  function renderGrid(section, filterCat = 'all') {
+  function renderGrid(section, filterCat) {
+    filterCat = filterCat || 'all';
     const grid = document.getElementById(section + 'Grid');
+    if (!grid) return;
     const filtered = filterCat === 'all' ? videos[section] : videos[section].filter(v => v.cat === filterCat);
 
     if (filtered.length === 0) {
@@ -785,18 +890,20 @@
   }
 
   function setFeatured(v) {
-    document.getElementById('featuredPlayer').innerHTML = `<iframe src="https://www.youtube.com/embed/${v.id}?rel=0" allowfullscreen></iframe>`;
-    document.getElementById('featuredLabel').textContent = v.title;
+    const player = document.getElementById('featuredPlayer');
+    const label = document.getElementById('featuredLabel');
+    if (player) player.innerHTML = `<iframe src="https://www.youtube.com/embed/${v.id}?rel=0" allowfullscreen></iframe>`;
+    if (label) label.textContent = v.title;
   }
 
   function filterVideos(cat, btn, section) {
-    btn.closest('.filter-bar').querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    const bar = btn.closest('.filter-bar');
+    if (bar) bar.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
     btn.classList.add('active');
     renderGrid(section, cat);
   }
 
-  // ── LESSON COMPLETION ──
-  // Stored as { videoId: true } so lookup is a simple key check.
+  // ════════ LESSON COMPLETION ════════
   function getCompletedMap() {
     return storageGet('completed', {});
   }
@@ -807,47 +914,38 @@
 
   function toggleLessonComplete(id) {
     const completed = getCompletedMap();
-    if (completed[id]) {
-      delete completed[id];
-    } else {
-      completed[id] = true;
-    }
+    if (completed[id]) delete completed[id]; else completed[id] = true;
     storageSet('completed', completed);
-
     renderModalCompleteAction(id);
     renderGrid('learn', currentFilterFor('learn'));
     renderGrid('tips', currentFilterFor('tips'));
-    if (document.getElementById('page-dashboard').classList.contains('active')) {
-      renderDashboard();
-    }
+    updateNavBadge();
   }
 
   function currentFilterFor(section) {
     const grid = document.getElementById(section + 'Grid');
+    if (!grid) return 'all';
     const activeChip = grid.closest('.section').querySelector('.filter-chip.active');
     return activeChip ? activeChip.getAttribute('data-cat') : 'all';
   }
 
   function renderModalCompleteAction(vidId) {
     const el = document.getElementById('modalCompleteAction');
+    if (!el) return;
     if (!vidId) { el.innerHTML = ''; return; }
     const done = isLessonComplete(vidId);
-    el.innerHTML = `<button class="btn-ghost" style="margin-top:1rem;" onclick="toggleLessonComplete('${vidId}')">
-      ${done ? '✓ Completed — click to undo' : 'Mark as complete'}
-    </button>`;
+    el.innerHTML = `<button class="btn-ghost" style="margin-top:1rem;" onclick="toggleLessonComplete('${vidId}')">${done ? '✓ Completed — click to undo' : 'Mark as complete'}</button>`;
   }
 
-  // ── PRACTICE TIMER & STREAK ──
-  const STREAK_THRESHOLD_SECONDS = 300; // 5 minutes
-
+  // ════════ PRACTICE TIMER & STREAK ════════
+  const STREAK_THRESHOLD_SECONDS = 300;
   let timerRunning = false;
   let timerElapsed = 0;
   let timerInterval = null;
 
-  // Local calendar date (not UTC) as 'YYYY-MM-DD', optionally offset by days.
-  function dateKey(offsetDays = 0) {
+  function dateKey(offsetDays) {
     const d = new Date();
-    d.setDate(d.getDate() + offsetDays);
+    d.setDate(d.getDate() + (offsetDays || 0));
     const y = d.getFullYear();
     const m = String(d.getMonth() + 1).padStart(2, '0');
     const day = String(d.getDate()).padStart(2, '0');
@@ -875,24 +973,13 @@
     storageSet('practiceLog', log);
   }
 
-  // Streak = consecutive qualifying days ending today. If today hasn't hit
-  // the threshold *yet*, we check yesterday instead, so an in-progress day
-  // doesn't make an existing streak visually vanish before it's over.
   function calculateStreak() {
     const log = getPracticeLog();
-    const qualifies = (offset) => (log[dateKey(offset)] || 0) >= STREAK_THRESHOLD_SECONDS;
-
+    const qualifies = function(offset) { return (log[dateKey(offset)] || 0) >= STREAK_THRESHOLD_SECONDS; };
     let offset = 0;
-    if (!qualifies(0)) {
-      if (!qualifies(-1)) return 0;
-      offset = -1;
-    }
-
+    if (!qualifies(0)) { if (!qualifies(-1)) return 0; offset = -1; }
     let streak = 0;
-    while (qualifies(offset)) {
-      streak++;
-      offset--;
-    }
+    while (qualifies(offset)) { streak++; offset--; }
     return streak;
   }
 
@@ -903,169 +990,44 @@
   function startTimer() {
     if (timerRunning) return;
     timerRunning = true;
-    timerInterval = setInterval(() => {
-      timerElapsed++;
-      updateTimerUI();
-    }, 1000);
-    updateTimerUI();
+    timerInterval = setInterval(() => { timerElapsed++; }, 1000);
   }
 
   function stopTimer() {
     if (!timerRunning) return;
     clearInterval(timerInterval);
     timerRunning = false;
-
     if (timerElapsed > 0) {
       logPracticeSession(timerElapsed);
       showToast(`Logged ${formatTime(timerElapsed)} of practice`);
     }
     timerElapsed = 0;
-
-    updateTimerUI();
-    renderDashboard();
   }
 
-  function updateTimerUI() {
-    const display = document.getElementById('timerElapsedDisplay');
-    const btn = document.getElementById('timerToggleBtn');
-    const progressBar = document.getElementById('timerTodayProgressBar');
-    const progressText = document.getElementById('timerTodayProgress');
-    if (!display || !btn || !progressBar || !progressText) return;
-
-    display.textContent = formatTime(timerElapsed);
-    btn.textContent = timerRunning ? 'Stop' : 'Start practice session';
-
-    const todaySoFar = getTodaySeconds() + timerElapsed;
-    const capped = Math.min(todaySoFar, STREAK_THRESHOLD_SECONDS);
-    progressBar.style.width = (capped / STREAK_THRESHOLD_SECONDS * 100) + '%';
-    progressText.textContent = todaySoFar >= STREAK_THRESHOLD_SECONDS
-      ? '✓ Today counts toward your streak'
-      : `${formatTime(todaySoFar)} / 5:00 to count today`;
-  }
-
-  // ── FRAMEWORK PROGRESS RINGS ──
-  // Each ring reflects Learn-page lessons only (Tips use a different
-  // category set that doesn't map to the three framework levels).
-  const RING_CONFIG = {
-    individual: { r: 54, circleId: 'ringIndividual', labelId: 'ringIndividualLabel' },
-    music:      { r: 40, circleId: 'ringMusic',      labelId: 'ringMusicLabel' },
-    ensemble:   { r: 26, circleId: 'ringEnsemble',   labelId: 'ringEnsembleLabel' }
-  };
-
-  function renderFrameworkRings() {
-    const completed = getCompletedMap();
-
-    Object.entries(RING_CONFIG).forEach(([cat, cfg]) => {
-      const lessonsInCat = videos.learn.filter(v => v.cat === cat);
-      const total = lessonsInCat.length;
-      const done = lessonsInCat.filter(v => completed[v.id]).length;
-      const pct = total === 0 ? 0 : done / total;
-
-      const circumference = 2 * Math.PI * cfg.r;
-      const dash = circumference * pct;
-      const gap = circumference - dash;
-
-      const circle = document.getElementById(cfg.circleId);
-      if (circle) circle.setAttribute('stroke-dasharray', `${dash.toFixed(1)} ${gap.toFixed(1)}`);
-
-      const label = document.getElementById(cfg.labelId);
-      if (label) label.textContent = `${Math.round(pct * 100)}%`;
-    });
-  }
-
-  // ── REFLECTION JOURNAL ──
+  // ════════ REFLECTION JOURNAL ════════
   function getReflections() {
     return storageGet('reflections', []);
   }
 
   function saveReflection() {
     const input = document.getElementById('reflectionInput');
+    if (!input) return;
     const text = input.value.trim();
     if (!text) { showToast('Write something before saving.'); return; }
-
     const reflections = getReflections();
-    reflections.unshift({
-      id: 'r_' + Date.now(),
-      date: dateKey(0),
-      text: text
-    });
+    reflections.unshift({ id: 'r_' + Date.now(), date: dateKey(0), text: text });
     storageSet('reflections', reflections);
-
     input.value = '';
     showToast('Reflection saved.');
-    renderReflectionHistory();
-  }
-
-  function deleteReflection(id) {
-    const reflections = getReflections().filter(r => r.id !== id);
-    storageSet('reflections', reflections);
-    renderReflectionHistory();
   }
 
   function formatReflectionDate(dateStr) {
-    // dateStr is 'YYYY-MM-DD' in local time; parse manually to avoid the
-    // UTC-shift bug that new Date('YYYY-MM-DD') has in some browsers.
     const [y, m, d] = dateStr.split('-').map(Number);
     const date = new Date(y, m - 1, d);
     return date.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
   }
 
-  function renderReflectionHistory() {
-    const container = document.getElementById('reflectionHistory');
-    const reflections = getReflections();
-
-    if (reflections.length === 0) {
-      container.innerHTML = `<p style="font-size:0.85rem;color:var(--muted);">No reflections yet — your saved entries will show up here.</p>`;
-      return;
-    }
-
-    container.innerHTML = reflections.map(r => `
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem 1.25rem;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.4rem;">
-          <span style="font-size:0.72rem;color:var(--primary);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">${escapeHtml(formatReflectionDate(r.date))}</span>
-          <button onclick="deleteReflection('${r.id}')" style="background:none;border:none;color:var(--muted);font-size:0.75rem;cursor:pointer;text-decoration:underline;">Delete</button>
-        </div>
-        <p style="font-size:0.88rem;color:var(--text);line-height:1.6;white-space:pre-wrap;">${escapeHtml(r.text)}</p>
-      </div>
-    `).join('');
-  }
-
-  // ── DASHBOARD ──
-  function renderDashboard() {
-    const completed = getCompletedMap();
-    const completedCount = Object.keys(completed).length;
-    document.getElementById('dashboardCompletedCount').textContent = completedCount;
-
-    const streak = calculateStreak();
-    document.getElementById('dashboardStreakCount').textContent = `${streak} day${streak === 1 ? '' : 's'}`;
-
-    updateTimerUI();
-    renderFrameworkRings();
-    renderReflectionHistory();
-
-    const nextUp = videos.learn.find(v => !completed[v.id]);
-    const continueEl = document.getElementById('dashboardContinue');
-
-    if (!nextUp) {
-      continueEl.innerHTML = `<div class="featured-video-wrap"><div class="featured-video-meta"><span style="font-size:0.9rem;color:var(--muted);">${videos.learn.length === 0 ? 'No lessons available yet.' : 'You have completed every lesson in Learn.'}</span></div></div>`;
-      return;
-    }
-
-    const safeId = escapeHtml(nextUp.id);
-    const safeTitle = escapeHtml(nextUp.title);
-    const safeDesc = escapeHtml(nextUp.desc || '');
-
-    continueEl.innerHTML = `
-      <div class="featured-video-wrap" style="cursor:pointer;" onclick="openModal('${safeId}','${safeTitle.replace(/'/g,"\\'")}','${safeDesc.replace(/'/g,"\\'")}')">
-        <div class="featured-video-meta">
-          <span class="featured-tag">Continue learning</span>
-          <span style="font-size:0.9rem;color:var(--text);font-weight:500;">${safeTitle}</span>
-        </div>
-      </div>
-    `;
-  }
-
-  // ── MODAL ──
+  // ════════ MODAL ════════
   function openModal(vidId, title, desc) {
     document.getElementById('modalTitle').textContent = title;
     document.getElementById('modalDesc').textContent = desc;
@@ -1085,7 +1047,7 @@
     if (e.target === document.getElementById('modalOverlay')) closeModal();
   }
 
-  // ── TOAST ──
+  // ════════ TOAST ════════
   function showToast(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg;
@@ -1093,11 +1055,12 @@
     setTimeout(() => t.classList.remove('show'), 3000);
   }
 
-  // Init: fetch videos.json, then render both grids
-  loadVideos();
-
-  // Show whichever page the URL points to (handles direct links + refresh)
-  renderPageFromHash();
+  // ════════ INIT ════════
+  document.addEventListener('DOMContentLoaded', () => {
+    renderPageFromHash();
+    loadVideos();
+  });
 </script>
+
 </body>
 </html>
