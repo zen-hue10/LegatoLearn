@@ -773,106 +773,84 @@
     const body = document.getElementById('sidebarBody');
     const completed = getCompletedMap();
     const completedCount = Object.keys(completed).length;
+    const totalLessons = videos.learn.length;
     const streak = calculateStreak();
-    const todaySeconds = getTodaySeconds();
-    const timerText = formatTime(todaySeconds);
     const nextUp = videos.learn.find(v => !completed[v.id]);
 
-    // Framework rings
+    // Lesson Progress Circle
+    const progressPct = totalLessons === 0 ? 0 : Math.round((completedCount / totalLessons) * 100);
+    const circ = 2 * Math.PI * 54;
+    const dash = circ * (progressPct / 100);
     const ringHtml = `
       <div class="sidebar-block">
-        <h3>Framework Progress</h3>
+        <h3>Lesson Progress</h3>
         <div style="display:flex;align-items:center;gap:1.5rem;">
-          <svg viewBox="0 0 140 140" width="100" height="100" style="flex-shrink:0;">
-            <g transform="rotate(-90 70 70)">
-              <circle cx="70" cy="70" r="54" fill="none" stroke="var(--border)" stroke-width="10"/>
-              <circle cx="70" cy="70" r="54" fill="none" stroke="#B5181B" stroke-width="10" stroke-linecap="round" id="sidebarRingIndividual" stroke-dasharray="0 339.3"/>
-              <circle cx="70" cy="70" r="40" fill="none" stroke="var(--border)" stroke-width="10"/>
-              <circle cx="70" cy="70" r="40" fill="none" stroke="#C4782A" stroke-width="10" stroke-linecap="round" id="sidebarRingMusic" stroke-dasharray="0 251.3"/>
-              <circle cx="70" cy="70" r="26" fill="none" stroke="var(--border)" stroke-width="10"/>
-              <circle cx="70" cy="70" r="26" fill="none" stroke="#2D7D46" stroke-width="10" stroke-linecap="round" id="sidebarRingEnsemble" stroke-dasharray="0 163.4"/>
-            </g>
-          </svg>
-          <div style="display:flex;flex-direction:column;gap:6px;font-size:0.8rem;">
-            <span style="display:flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;border-radius:50%;background:#B5181B;"></span> Individual</span>
-            <span style="display:flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;border-radius:50%;background:#C4782A;"></span> Music Making</span>
-            <span style="display:flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;border-radius:50%;background:#2D7D46;"></span> Ensemble</span>
+          <div style="position:relative;width:100px;height:100px;">
+            <svg viewBox="0 0 120 120" width="100" height="100">
+              <g transform="rotate(-90 60 60)">
+                <circle cx="60" cy="60" r="50" fill="none" stroke="var(--border)" stroke-width="10"/>
+                <circle cx="60" cy="60" r="50" fill="none" stroke="var(--primary)" stroke-width="10" stroke-linecap="round" stroke-dasharray="${dash.toFixed(1)} ${(circ - dash).toFixed(1)}"/>
+              </g>
+            </svg>
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:var(--text);">${progressPct}%</div>
+          </div>
+          <div>
+            <div style="font-size:26px;font-weight:700;color:var(--text);">${completedCount}/${totalLessons}</div>
+            <div style="font-size:13px;color:var(--muted);margin-top:4px;">Lessons completed</div>
+            ${nextUp ? `<div style="margin-top:12px;font-size:12px;color:var(--primary);cursor:pointer;" onclick="toggleSidebar();openModal('${escapeHtml(nextUp.id)}','${nextUp.title.replace(/'/g,"\\'")}','${(nextUp.desc||'').replace(/'/g,"\\'")}')">Continue learning →</div>` : ''}
           </div>
         </div>
       </div>
     `;
 
-    // Timer block
-    const timerHtml = `
-      <div class="sidebar-block">
-        <h3>Today's Practice</h3>
-        <div class="sidebar-timer-row">
-          <div class="sidebar-timer-display" id="sidebarTimerDisplay">${timerText}</div>
-          <button class="btn-primary" id="sidebarTimerBtn" onclick="handleSidebarTimer()" style="font-size:0.8rem;padding:8px 16px;">${timerRunning ? 'Stop' : 'Start'}</button>
-        </div>
-        <div style="margin-top:0.75rem;">
-          <div style="height:5px;border-radius:999px;background:var(--border);overflow:hidden;">
-            <div style="height:100%;width:${Math.min(todaySeconds/300*100,100)}%;background:var(--primary);border-radius:999px;transition:width 0.3s;"></div>
-          </div>
-          <div style="font-size:0.7rem;color:var(--muted);margin-top:0.3rem;">
-            ${todaySeconds >= 300 ? '✓ Today counts!' : formatTime(todaySeconds) + ' / 5:00 for streak'}
-          </div>
-        </div>
-      </div>
-    `;
-
-    // Stats
+    // Streaks Counter
     const statsHtml = `
-      <div class="sidebar-stats-row">
-        <div class="sidebar-stat">
-          <div class="sidebar-stat-value">${completedCount}</div>
-          <div class="sidebar-stat-label">Lessons</div>
-        </div>
-        <div class="sidebar-stat">
-          <div class="sidebar-stat-value">${streak}</div>
-          <div class="sidebar-stat-label">Day Streak</div>
+      <div class="sidebar-block">
+        <h3>Practice Streak</h3>
+        <div style="display:flex;align-items:center;gap:16px;">
+          <div style="font-size:56px;">🔥</div>
+          <div>
+            <div style="font-size:42px;font-weight:800;color:#fbbf24;line-height:1;">${streak}</div>
+            <div style="font-size:14px;color:var(--muted);margin-top:6px;">days in a row</div>
+            <div style="margin-top:10px;display:flex;gap:6px;">
+              ${Array.from({length:7},(_,i)=>
+                `<span style="width:8px;height:8px;border-radius:50%;display:inline-block;background:${i < Math.min(streak,7) ? '#fbbf24' : 'var(--border)'};"></span>`
+              ).join('')}
+            </div>
+          </div>
         </div>
       </div>
     `;
 
-    // Continue learning
-    let continueHtml = '';
-    if (nextUp) {
-      continueHtml = `
-        <div class="sidebar-block sidebar-continue" onclick="toggleSidebar();openModal('${escapeHtml(nextUp.id)}','${nextUp.title.replace(/'/g,"\\'")}','${(nextUp.desc||'').replace(/'/g,"\\'")}')">
-          <div class="sidebar-continue-tag">Continue Learning</div>
-          <div class="sidebar-continue-title">${escapeHtml(nextUp.title)}</div>
-        </div>
-      `;
-    }
-
-    // Reflections
+    // Reflection Log
     const reflections = getReflections();
     let reflectionsHtml = '';
     if (reflections.length > 0) {
       reflectionsHtml = `
         <div class="sidebar-block">
-          <h3>Reflections</h3>
-          ${reflections.slice(0, 5).map(r => `
-            <div class="sidebar-reflection-item">
-              <div class="sidebar-reflection-date">${escapeHtml(formatReflectionDate(r.date))}</div>
-              <div class="sidebar-reflection-text">${escapeHtml(r.text).replace(/\n/g, '<br>')}</div>
-            </div>
-          `).join('')}
+          <h3>Reflection Log</h3>
+          <div style="max-height:140px;overflow-y:auto;">
+            ${reflections.slice(0, 5).map(r => `
+              <div style="padding:10px 0;border-bottom:1px solid var(--border);">
+                <div style="font-size:12px;color:var(--muted);margin-bottom:2px;">${escapeHtml(formatReflectionDate(r.date))}</div>
+                <div style="font-size:13px;color:var(--text);">${escapeHtml(r.text).replace(/\n/g, '<br>')}</div>
+              </div>
+            `).join('')}
+          </div>
         </div>
       `;
     } else {
       reflectionsHtml = `
         <div class="sidebar-block">
-          <h3>Reflections</h3>
-          <p style="font-size:0.8rem;color:var(--muted);">No reflections yet. Save one from the Planner or Dashboard.</p>
+          <h3>Reflection Log</h3>
+          <p style="font-size:0.8rem;color:var(--muted);">No reflections yet. Save one from the Planner.</p>
         </div>
       `;
     }
 
-    body.innerHTML = ringHtml + timerHtml + statsHtml + continueHtml + reflectionsHtml;
-    updateSidebarRings();
+    body.innerHTML = ringHtml + statsHtml + reflectionsHtml;
   }
+
 
   function updateSidebarRings() {
     const completed = getCompletedMap();
