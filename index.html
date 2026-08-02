@@ -666,7 +666,7 @@
 <script src="storage.js"></script>
 <script>
   // ── PAGE NAVIGATION (hash-based router) ──
-  const VALID_PAGES = ['home', 'dashboard', 'learn', 'tips', 'framework', 'schools', 'about'];
+  const VALID_PAGES = ['home', 'dashboard', 'learn', 'planner', 'tips', 'framework', 'schools', 'about'];
 
   // Sets the URL — this is what buttons call. Real <a href="#/..."> links
   // don't need this at all; the browser changes the hash on its own.
@@ -689,6 +689,7 @@
     window.scrollTo(0, 0);
 
     if (page === 'dashboard') renderDashboard();
+    if (page === 'planner') plannerLoadHistory();
   }
 
   window.addEventListener('hashchange', renderPageFromHash);
