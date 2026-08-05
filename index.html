@@ -88,8 +88,8 @@
   <a class="nav-logo" href="#/home">Legato<span>Learn</span></a>
   <ul class="nav-links">
     <li><a href="#/home" class="active" id="nav-home">Home</a></li>
-    <li class="nav-dropdown-wrap">
-      <button class="nav-dropdown-btn" id="navLearnBtn" onclick="toggleLearnDropdown(event)">Learn ▾</button>
+        <li class="nav-dropdown-wrap">
+      <a href="#/learn" id="nav-learn" onclick="toggleLearnDropdown(event); return false;">Learn</a>
       <div class="nav-dropdown-menu" id="navLearnDropdown">
         <a href="#" onclick="navigateTo('learn');closeLearnDropdown();return false;">Lessons</a>
         <a href="#" onclick="navigateTo('tips');closeLearnDropdown();return false;">Tips & Tricks</a>
