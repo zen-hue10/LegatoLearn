@@ -715,6 +715,7 @@
 
   // ════════ MORE DROPDOWN ════════
   function toggleLearnDropdown(e){
+  e.preventDefault();
   e.stopPropagation();
   document.getElementById('navLearnDropdown').classList.toggle('show');
 }
